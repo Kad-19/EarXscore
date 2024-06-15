@@ -5,7 +5,7 @@ from app.models import db, User
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/register', methods=['POST'])
+@auth_bp.route('/register', methods=['POST'], strict_slashes=False)
 def register():
     from . import bcrypt
     username = request.json.get('username')
@@ -37,7 +37,7 @@ def authenticate_user(username, password):
         return user
     return None
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST'], strict_slashes=False)
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
