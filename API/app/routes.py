@@ -48,6 +48,6 @@ def login():
     user = authenticate_user(username, password)
 
     if user:
-        return jsonify({'user': user.username, 'id': user.id}), 200
+        return jsonify({'user': user.username, 'id': user.id, 'email': user.email}), 200
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
