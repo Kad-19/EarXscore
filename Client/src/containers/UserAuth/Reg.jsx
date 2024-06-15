@@ -45,22 +45,22 @@ const Reg = ({ signup, isAuthenticated, error }) => {
   useEffect(() => {
     if (error) {
       setAccountCreated(false);
-      if (error == "OK"){
-        setAccountCreated(true);
-      }
-      if (error.hasOwnProperty("email")) {
-        setErrorMessage("");
-        error.email.map((mes) => {
-          setErrorMessage((prevmes) => prevmes + " " + mes);
-        });
+      setErrorMessage(error.error);
+      // if (error == "OK"){
+      //   setAccountCreated(true);
+      // }
+      // if (error.hasOwnProperty("email")) {
+      //   setErrorMessage("");
+      //   error.email.map((mes) => {
+      //     setErrorMessage((prevmes) => prevmes + " " + mes);
+      //   });
+      //   setIsLoading(false);
+      // } else if (error.hasOwnProperty("password")) {
+      //   setErrorMessage("");
+      //   error.password.map((mes) => {
+      //     setErrorMessage((prevmes) => prevmes + " " + mes);
+      //   });
         setIsLoading(false);
-      } else if (error.hasOwnProperty("password")) {
-        setErrorMessage("");
-        error.password.map((mes) => {
-          setErrorMessage((prevmes) => prevmes + " " + mes);
-        });
-        setIsLoading(false);
-      }
     }
   }, [error]);
   // if (isAuthenticated) {
@@ -163,7 +163,7 @@ const Reg = ({ signup, isAuthenticated, error }) => {
             <p>
               {" "}
               Already have Account?{" "}
-              <NavLink to="/login" className="text-primary-foreground cursor-pointer">
+              <NavLink to="/" className="text-primary-foreground cursor-pointer">
                 Login
               </NavLink>
             </p>

@@ -132,7 +132,7 @@ export const login = (email, password) => async (dispatch) => {
 
   try {
     const res = await axios.post(
-      `${API_URL}/auth/jwt/create/`,
+      `${API_URL}/auth/`,
       body,
       config
     );
@@ -152,7 +152,7 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 export const signup =
-  (name, email, password, re_password) => async (dispatch) => {
+  (username, email, password, re_password) => async (dispatch) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -160,19 +160,18 @@ export const signup =
     };
 
     const body = JSON.stringify({
-      name,
+      username,
       email,
-      password,
-      re_password,
+      password
     });
 
     try {
       const res = await axios.post(
-        `${API_URL}/auth/users/`,
+        `${API_URL}/auth/register`,
         body,
         config
       );
-
+      console.log(res);
       dispatch({
         type: SIGNUP_SUCCESS,
         payload: res.data,
