@@ -34,14 +34,10 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
       };
     case LOGIN_SUCCESS:
-      localStorage.setItem("access", payload.access);
-      localStorage.setItem("refresh", payload.refresh);
-
       return {
         ...state,
         isAuthenticated: true,
-        access: payload.access,
-        refresh: payload.refresh,
+        user: payload,
       };
     case SIGNUP_SUCCESS:
       return {

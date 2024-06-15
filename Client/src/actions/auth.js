@@ -121,28 +121,29 @@ export const delete_user = (current_password) => async () => {
   }
 };
 
-export const login = (email, password) => async (dispatch) => {
+export const login = (username, password) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
 
-  const body = JSON.stringify({ email, password });
+  const body = JSON.stringify({ username, password });
 
   try {
     const res = await axios.post(
-      `${API_URL}/auth/`,
+      `${API_URL}/auth/login`,
       body,
       config
     );
+    console.log(res);
 
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
     });
 
-    dispatch(load_user());
+    // dispatch(load_user());
   } catch (err) {
     dispatch({
       type: LOGIN_FAIL,

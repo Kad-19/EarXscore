@@ -30,26 +30,39 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
   };
 
   useEffect(() => {
-    // if (isAuthenticated) {
-    //   if (user) {
-    //     if (user.is_student) {
-    //       navigate("/");
-    //     } else {
-    //       navigate("/authCounselor");
-    //     }
-    //     console.log(user);
-    //   }
-    // }
-    // if (error) {
-    //   setIsLoading(false);
-    // }
+    if (isAuthenticated) {
+      if (user) {
+        console.log(user);
+        setIsLoading(false);
+      }
+    }
+    if (error) {
+      setIsLoading(false);
+    }
   });
 
   return (
     <div className="flex items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 gap-24 flex-wrap">
       <div className="flex gap-2">
-        <p className="text-6xl font-semibold leading-snug pr-10">Login to<br/> EarXScore Now <br/><p className="back-wave h-40"></p></p>
-        <img src="/images/ManShowingSmartphone-ezgif.com-crop.gif" alt="" className="h-96 pr-8" />
+        {user ? (
+          <div className="text-6xl font-semibold leading-snug pr-10">
+            Welcome {user.user}
+            <br /> <br />
+            <p className="back-wave h-40"></p>
+          </div>
+        ) : (
+          <div className="text-6xl font-semibold leading-snug pr-10">
+            Login to
+            <br /> EarXScore Now <br />
+            <p className="back-wave h-40"></p>
+          </div>
+        )}
+       
+        <img
+          src="/images/ManShowingSmartphone-ezgif.com-crop.gif"
+          alt=""
+          className="h-96 pr-8"
+        />
       </div>
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 border border-y-2 border-y-secondary">
         {verified == "notverified" ? (
@@ -81,7 +94,7 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
               </label>
               <div class="relative my-1">
                 <Input
-                  type="email"
+                  type="text"
                   class="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
                   placeholder="Enter email"
                   name="email"
@@ -91,10 +104,9 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
                 />
 
                 <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
-                <MdOutlineMail className="" />
+                  <MdOutlineMail className="" />
                 </span>
               </div>
-              
             </div>
             <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
               <label htmlFor="" className="w-[110px] font-medium">
@@ -113,10 +125,9 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
                 />
 
                 <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
-                <RiLockPasswordLine className="" />
+                  <RiLockPasswordLine className="" />
                 </span>
               </div>
-              
             </div>
 
             <div className="flex gap-4 text-[18px] align-middle py-3 flex-col">
