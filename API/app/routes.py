@@ -1,6 +1,5 @@
 # APIs to handle any route comes in
 
-import bcrypt
 from flask import Blueprint, request, jsonify
 from app.models import db, User
 
@@ -8,11 +7,12 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
+    from . import bcrypt
     username = request.json.get('username')
     email = request.json.get('email')
     password = request.json.get('password')
 
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     if not username or not email or not password:
         return jsonify({'error': 'Missing username, email, or password'}), 400
@@ -26,3 +26,29 @@ def register():
     db.session.commit()
 
     return jsonify({'message': 'User registered successfully'}), 201
+
+# Helper function to authenticate user
+
+
+def authenticate_user(username, password):
+    from . import bcrypt
+    user = User.query.filter_by(username=username).first()
+    if user and bcrypt.check_password_hash(user.password, password):
+        return user
+    return None
+
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+
+    if not username or not password:
+        return jsonify({'error': 'Missing username or password'}), 400
+    
+    user = authenticate_user(username, password)
+
+    if user:
+        #access_token = create_access_token(identity={'id': user.id, 'username': user.username})
+        return jsonify({'user': user.username, 'id': user.id}), 200
+    else:
+        return jsonify({'error': 'Invalid username or password'}), 401
