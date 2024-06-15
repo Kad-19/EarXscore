@@ -94,7 +94,7 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
               </label>
               <div class="relative my-1">
                 <Input
-                  type="text"
+                  type="email"
                   class="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
                   placeholder="Enter email"
                   name="email"

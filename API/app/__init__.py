@@ -11,7 +11,7 @@ bcrypt = Bcrypt()
 def create_app():
     app = Flask(__name__)
     # Configurations for SQLAlchemy
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://earuser:1199@localhost/earhealth'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:1919@localhost/earhealth'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)

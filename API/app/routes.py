@@ -30,24 +30,24 @@ def register():
 # Helper function to authenticate user
 
 
-def authenticate_user(username, password):
+def authenticate_user(email, password):
     from . import bcrypt
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(email=email).first()
     if user and bcrypt.check_password_hash(user.password, password):
         return user
     return None
 
 @auth_bp.route('/login', methods=['POST'], strict_slashes=False)
 def login():
-    username = request.json.get('username')
+    email = request.json.get('email')
     password = request.json.get('password')
 
-    if not username or not password:
-        return jsonify({'error': 'Missing username or password'}), 400
+    if not email or not password:
+        return jsonify({'error': 'Missing email or password'}), 400
     
-    user = authenticate_user(username, password)
+    user = authenticate_user(email, password)
 
     if user:
         return jsonify({'user': user.username, 'id': user.id, 'email': user.email}), 200
     else:
-        return jsonify({'error': 'Invalid username or password'}), 401
+        return jsonify({'error': 'Invalid email or password'}), 401
