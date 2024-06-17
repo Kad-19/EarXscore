@@ -122,7 +122,7 @@ def reset_password():
     
     return jsonify({'error': 'User not found'}), 400
 
-@auth_bp.route('/change_password', methods=['POST'], strict_slashes=False)
+"""@auth_bp.route('/change_password', methods=['POST'], strict_slashes=False)
 def change_password():
     from . import bcrypt
     email = request.json.get('email')
@@ -140,4 +140,4 @@ def change_password():
         db.session.commit()    # this commit the password
         return jsonify({'message': 'Password has been reset successfully.'}), 200
     
-    return jsonify({'error': 'User not found'}), 400
+    return jsonify({'error': 'User not found'}), 400"""
