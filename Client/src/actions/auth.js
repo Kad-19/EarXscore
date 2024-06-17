@@ -186,14 +186,14 @@ export const signup =
     }
   };
 
-export const verify = (codes) => async (dispatch) => {
+export const verify = (otp) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
 
-  const body = JSON.stringify({ codes });
+  const body = JSON.stringify({ otp });
 
   try {
     const res = await axios.post(
