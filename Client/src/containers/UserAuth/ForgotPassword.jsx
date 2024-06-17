@@ -24,13 +24,14 @@ const ForgotPassword = ({ error, reset_password, re_email }) => {
     setIsLoading(true);
 
     await reset_password(email);
+    navigate("/confirmpasswordreset");
     
     setIsLoading(false);
   };
 
   useEffect(() => {
     if (re_email == email) {
-      navigate("/confirmpasswordreset");
+    //   navigate("/confirmpasswordreset");
     }
   }, [re_email]);
   return (
