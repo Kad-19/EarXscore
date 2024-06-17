@@ -197,7 +197,7 @@ export const verify = (codes) => async (dispatch) => {
 
   try {
     const res = await axios.post(
-      `${API_URL}/auth/`,
+      `${API_URL}/auth/verify_otp`,
       body,
       config
     );
@@ -226,7 +226,7 @@ export const reset_password = (email) => async (dispatch) => {
 
   try {
     await axios.post(
-      `${API_URL}/auth//`,
+      `${API_URL}/auth/forget_password`,
       body,
       config
     );
@@ -256,7 +256,7 @@ export const reset_password_confirm =
 
     try {
       await axios.post(
-        `${API_URL}/auth/`,
+        `${API_URL}/auth/reset_password`,
         body,
         config
       );
