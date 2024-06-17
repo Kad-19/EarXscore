@@ -1,11 +1,15 @@
 # APIs to handle any route comes in
 
-from flask import Blueprint, request, jsonify
+from datetime import datetime, timedelta
+from flask import Blueprint, request, jsonify, url_for, current_app
 from app.models import db, User
 from flask_cors import CORS
+from flask_mail import Mail, Message
+import random, string
 
 auth_bp = Blueprint('auth', __name__)
 CORS(auth_bp)
+mail = Mail()
 
 @auth_bp.route('/register', methods=['POST'], strict_slashes=False)
 def register():
@@ -53,3 +57,66 @@ def login():
         return jsonify({'user': user.username, 'id': user.id, 'email': user.email}), 200
     else:
         return jsonify({'error': 'Invalid email or password'}), 401
+
+# Helper function to send email to the user
+def send_email(to, reset_url):
+    msg = Message('EarXscore: Password Reset Request',
+                  sender=current_app.config['MAIL_DEFAULT_SENDER'],
+                  recipients=[to])
+    msg.body = f'Please use the following link to reset your password: {reset_url}'
+    mail.send(msg)
+
+@auth_bp.route('/forget_password', methods=['POST'], strict_slashes=False)
+def forgot():
+    email = request.json.get('email')
+    
+    if not email:
+        return jsonify({'error': 'Missing email'}), 400
+    
+    user = User.query.filter_by(email=email).first()
+    
+    if user:
+        otp = ''.join(random.choices(string.digits, k=6))
+        user.otp = otp
+        user.otp_expiry = datetime.utcnow() + timedelta(minutes=10)
+        db.session.commit()
+        send_email(email, f"Your Reset Code is {otp}")
+        
+    return jsonify(message="a reset link has been sent"), 200
+
+@auth_bp.route('/verify_otp', methods=['POST'], strict_slashes=False)
+def verify_otp():
+    otp = request.json.get('otp')
+    
+    if not otp:
+        return jsonify({'error': 'Missing OTP'}), 400
+    
+    user = User.query.filter_by(otp=otp).first()
+    
+    if user and user.otp_expiry > datetime.utcnow():
+        return jsonify({'message': 'Verification Success'}), 200
+    
+    return jsonify({'error': 'Invalid or expired OTP'}), 400
+
+
+@auth_bp.route('/reset_password', methods=['POST'], strict_slashes=False)
+def reset_password():
+    from . import bcrypt
+    email = request.json.get('email')
+    password = request.json.get('password')
+    
+    if not email or not password:
+        return jsonify({'error': 'Missing email or new password'}), 400
+    
+    user = User.query.filter_by(email=email).first()
+    
+    if user:
+        user.password = bcrypt.generate_password_hash(password).decode('utf-8')  # this will hash the pwd
+        user.otp = None  # Clear the OTP after password reset
+        user.otp_expiry = None
+
+        db.session.add(user)   # this will overwrite the password
+        db.session.commit()    # this commit the password
+        return jsonify({'message': 'Password has been reset successfully.'}), 200
+    
+    return jsonify({'error': 'User not found'}), 400
