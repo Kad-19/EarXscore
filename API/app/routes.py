@@ -63,7 +63,7 @@ def send_email(to, reset_url):
     msg = Message('EarXscore: Password Reset Request',
                   sender=current_app.config['MAIL_DEFAULT_SENDER'],
                   recipients=[to])
-    msg.body = f'Please use the following link to reset your password: {reset_url}'
+    msg.body = f'Your Code to reset your password: {reset_url}'
     mail.send(msg)
 
 @auth_bp.route('/forget_password', methods=['POST'], strict_slashes=False)
