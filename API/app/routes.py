@@ -86,12 +86,13 @@ def forgot():
 
 @auth_bp.route('/verify_otp', methods=['POST'], strict_slashes=False)
 def verify_otp():
+    email = request.json.get('email')
     otp = request.json.get('otp')
     
     if not otp:
         return jsonify({'error': 'Missing OTP'}), 400
     
-    user = User.query.filter_by(otp=otp).first()
+    user = User.query.filter_by(email=email, otp=otp).first()
     
     if user and user.otp_expiry > datetime.utcnow():
         return jsonify({'message': 'Verification Success'}), 200
@@ -115,6 +116,26 @@ def reset_password():
         user.otp = None  # Clear the OTP after password reset
         user.otp_expiry = None
 
+        db.session.add(user)   # this will overwrite the password
+        db.session.commit()    # this commit the password
+        return jsonify({'message': 'Password has been reset successfully.'}), 200
+    
+    return jsonify({'error': 'User not found'}), 400
+
+@auth_bp.route('/change_password', methods=['POST'], strict_slashes=False)
+def change_password():
+    from . import bcrypt
+    email = request.json.get('email')
+    password = request.json.get('password')
+    new_password =request.json.get('new_password')
+    
+    if not email or not password:
+        return jsonify({'error': 'Missing email or old password'}), 400
+    
+    user = User.query.filter_by(email=email).first()
+    
+    if user:
+        user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')  # this will hash the pwd
         db.session.add(user)   # this will overwrite the password
         db.session.commit()    # this commit the password
         return jsonify({'message': 'Password has been reset successfully.'}), 200
