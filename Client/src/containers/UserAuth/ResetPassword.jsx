@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { reset_password, reset_password_confirm } from "@/actions/auth";
 import { RiLockPasswordLine } from "react-icons/ri";
-const ResetPassword = ({ error, email, reset_password_confirm }) => {
+const ResetPassword = ({ error, email, reset_password_confirm, message }) => {
   const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +28,6 @@ const ResetPassword = ({ error, email, reset_password_confirm }) => {
     // await reset_password(email);
     if(password == confirmpassword){
         await reset_password_confirm(email, password);
-        setErrorMessage("Password reset successfully");
     }
     else{
         setErrorMessage("Password and confirm password don't match");
@@ -42,6 +41,12 @@ const ResetPassword = ({ error, email, reset_password_confirm }) => {
         setIsLoading(false);
     }
   })
+
+  useEffect(() => {
+    if(message){
+        setErrorMessage(message.message);
+    }
+  }, [message]);
   return (
     <div className="flex items-center w-full justify-center h-screen">
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 border border-y-2 border-y-secondary">
@@ -131,6 +136,7 @@ const ResetPassword = ({ error, email, reset_password_confirm }) => {
 const mapStateToProps = (state) => ({
   error: state.auth.error,
   email: state.auth.email,
+  message: state.auth.message,
 });
 
 export default connect(mapStateToProps, { reset_password_confirm })(ResetPassword);

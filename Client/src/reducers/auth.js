@@ -22,7 +22,7 @@ const initialState = {
   isAuthenticated: null,
   user: null,
   error: null,
-  email: null,
+  email: localStorage.getItem('email'),
   message: null,
 };
 
@@ -79,11 +79,16 @@ export default function (state = initialState, action) {
         error: payload,
       };
     case PASSWORD_RESET_SUCCESS:
+      localStorage.setItem("email", payload);
       {return {
         ...state,
         email: payload,
       }}
     case PASSWORD_RESET_CONFIRM_SUCCESS:
+      return{
+        ...state,
+        message: payload,
+      }
     case PASSWORD_RESET_CONFIRM_FAIL:
       return {
         ...state,

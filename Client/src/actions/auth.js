@@ -186,14 +186,14 @@ export const signup =
     }
   };
 
-export const verify = (otp) => async (dispatch) => {
+export const verify = (otp, email) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
 
-  const body = JSON.stringify({ otp });
+  const body = JSON.stringify({ otp, email });
 
   try {
     const res = await axios.post(
@@ -255,7 +255,7 @@ export const reset_password_confirm =
     const body = JSON.stringify({ email, password});
 
     try {
-      await axios.post(
+      const res = await axios.post(
         `${API_URL}/auth/reset_password`,
         body,
         config
@@ -263,6 +263,7 @@ export const reset_password_confirm =
 
       dispatch({
         type: PASSWORD_RESET_CONFIRM_SUCCESS,
+        payload: res.data,
       });
     } catch (err) {
       console.log(err);

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { reset_password, verify } from "@/actions/auth";
-const ConfirmPasswordReset = ({ error, verify, message }) => {
+const ConfirmPasswordReset = ({ error, verify, message, email }) => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ const ConfirmPasswordReset = ({ error, verify, message }) => {
     setIsLoading(true);
 
     const otp = code1 + code2 + code3 + code4 + code5 + code6;
-    await verify(otp);
+    await verify(otp, email);
 
     setIsLoading(false);
   };
@@ -213,6 +213,7 @@ const ConfirmPasswordReset = ({ error, verify, message }) => {
 const mapStateToProps = (state) => ({
   error: state.auth.error,
   message: state.auth.message,
+  email: state.auth.email,
 });
 
 export default connect(mapStateToProps, { verify })(
