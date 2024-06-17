@@ -46,7 +46,6 @@ const ResetPassword = ({ error, email, reset_password_confirm, message }) => {
   useEffect(() => {
     if(message){
         setErrorMessage(message.message);
-        navigate("/");
     }
   }, [message]);
   return (
