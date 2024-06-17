@@ -28,6 +28,7 @@ const ResetPassword = ({ error, email, reset_password_confirm, message }) => {
     // await reset_password(email);
     if(password == confirmpassword){
         await reset_password_confirm(email, password);
+        navigate("/");
     }
     else{
         setErrorMessage("Password and confirm password don't match");
@@ -45,6 +46,7 @@ const ResetPassword = ({ error, email, reset_password_confirm, message }) => {
   useEffect(() => {
     if(message){
         setErrorMessage(message.message);
+        navigate("/");
     }
   }, [message]);
   return (
