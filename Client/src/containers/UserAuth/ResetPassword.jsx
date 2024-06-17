@@ -1,97 +1,62 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineMail } from "react-icons/md";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
-import { login } from "../../actions/auth";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-const LoginPage = ({ user, login, isAuthenticated, error }) => {
+import { reset_password, reset_password_confirm } from "@/actions/auth";
+import { RiLockPasswordLine } from "react-icons/ri";
+const ResetPassword = ({ error, email, reset_password_confirm }) => {
   const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
     password: "",
+    confirmpassword: "",
   });
 
-  const { email, password } = formData;
+  const { password, confirmpassword } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    login(email, password);
+    // await reset_password(email);
+    if(password == confirmpassword){
+        await reset_password_confirm(email, password);
+        setErrorMessage("Password reset successfully");
+    }
+    else{
+        setErrorMessage("Password and confirm password don't match");
+    }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (user) {
-        console.log(user);
+    if(error) {
+        setErrorMessage(error.error);
         setIsLoading(false);
-      }
     }
-    if (error) {
-      setIsLoading(false);
-    }
-  });
-
+  })
   return (
-    <div className="flex items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 gap-24 flex-wrap">
-      <div className="flex gap-2">
-        {user ? (
-          <div className="text-6xl font-semibold leading-snug pr-10">
-            Welcome {user.user}
-            <br /> <br />
-            <p className="back-wave h-40"></p>
-          </div>
-        ) : (
-          <div className="text-6xl font-semibold leading-snug pr-10">
-            Login to
-            <br /> EarXScore Now <br />
-            <p className="back-wave h-40"></p>
-          </div>
-        )}
-       
-        <img
-          src="/images/ManShowingSmartphone-ezgif.com-crop.gif"
-          alt=""
-          className="h-96 pr-8"
-        />
-      </div>
+    <div className="flex items-center w-full justify-center h-screen">
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 border border-y-2 border-y-secondary">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-primary md:text-2xl dark:text-white">
-            Your Account
+            Enter your new password
           </h1>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            
+          </p>
           <form
             onSubmit={(e) => onSubmit(e)}
-            className="space-y-4 md:space-y-6"
+            className="space-y-4 md:space-y-2"
           >
-            <div className="relative mt-10 flex text-[18px] flex-wrap flex-col">
-              <label htmlFor="" className="w-[110px] font-medium">
-                Email
-              </label>
-              <div class="relative my-1">
-                <Input
-                  type="email"
-                  class="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
-                  placeholder="Enter email"
-                  name="email"
-                  value={email}
-                  onChange={(e) => onChange(e)}
-                  required
-                />
-
-                <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
-                  <MdOutlineMail className="" />
-                </span>
-              </div>
-            </div>
-            <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
+           <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
               <label htmlFor="" className="w-[110px] font-medium">
                 {" "}
                 Password
@@ -112,12 +77,32 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
                 </span>
               </div>
             </div>
+            <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
+              <label htmlFor="" className=" font-medium">
+                {" "}
+                Confirm Password
+              </label>
+              <div class="relative my-1">
+                <Input
+                  type="password"
+                  class="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
+                  placeholder="Enter password"
+                  name="confirmpassword"
+                  value={confirmpassword}
+                  onChange={(e) => onChange(e)}
+                  required
+                />
 
-            <div className="flex gap-4 text-[18px] align-middle py-3 flex-col">
-              <div className=" italic text-red-500 text-lg ">
-                {error ? error.error : ""}
+                <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
+                  <RiLockPasswordLine className="" />
+                </span>
               </div>
+            </div>
 
+            <div className="flex gap-2 text-[18px] align-middle py-1 flex-col">
+              <div className=" italic text-red-500 text-md ">
+                {errorMessage ? errorMessage : ""}
+              </div>
               {isLoading ? (
                 <Button disabled className=" bg-muted-foreground text-muted">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -128,22 +113,13 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
                   type="submit"
                   className="w-full rounded-lg bg-muted-foreground text-muted py-1 transition-colors duration-300 font-medium hover:text-muted-foreground hover:bg-muted "
                 >
-                  Login
+                  Reset Password
                 </Button>
               )}
 
-              <div className="w-full text-primary text-right mr-4 font-medium">
-                <NavLink to="/forgotpassword">Forgot Password?</NavLink>
+              <div className="w-full text-primary text-right mr-4 font-medium text-sm">
+                <NavLink to="/">Back to login</NavLink>
               </div>
-            </div>
-            <div className="text-lg py-1 font-medium">
-              <p>
-                {" "}
-                New to EarScore?{" "}
-                <NavLink to="/signup" className="text-primary sm:mx-3">
-                  Create Account
-                </NavLink>
-              </p>
             </div>
           </form>
         </div>
@@ -153,9 +129,8 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
 };
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
   error: state.auth.error,
-  user: state.auth.user,
+  email: state.auth.email,
 });
 
-export default connect(mapStateToProps, { login })(LoginPage);
+export default connect(mapStateToProps, { reset_password_confirm })(ResetPassword);

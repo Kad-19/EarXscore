@@ -186,28 +186,31 @@ export const signup =
     }
   };
 
-export const verify = (uid, token) => async (dispatch) => {
+export const verify = (codes) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
 
-  const body = JSON.stringify({ uid, token });
+  const body = JSON.stringify({ codes });
 
   try {
-    await axios.post(
-      `${API_URL}/auth/users/activation/`,
+    const res = await axios.post(
+      `${API_URL}/auth/`,
       body,
       config
     );
 
     dispatch({
       type: ACTIVATION_SUCCESS,
+      payload: res.data
     });
   } catch (err) {
+    console.log(err);
     dispatch({
       type: ACTIVATION_FAIL,
+      payload: err.response.data,
     });
   }
 };
@@ -223,34 +226,37 @@ export const reset_password = (email) => async (dispatch) => {
 
   try {
     await axios.post(
-      `${API_URL}/auth/users/reset_password/`,
+      `${API_URL}/auth//`,
       body,
       config
     );
 
     dispatch({
       type: PASSWORD_RESET_SUCCESS,
+      payload: email,
     });
   } catch (err) {
+    console.log(err);
     dispatch({
       type: PASSWORD_RESET_FAIL,
+      payload: err.message,
     });
   }
 };
 
 export const reset_password_confirm =
-  (uid, token, new_password, re_new_password) => async (dispatch) => {
+  (email, password) => async (dispatch) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    const body = JSON.stringify({ uid, token, new_password, re_new_password });
+    const body = JSON.stringify({ email, password});
 
     try {
       await axios.post(
-        `${API_URL}/auth/users/reset_password_confirm/`,
+        `${API_URL}/auth/`,
         body,
         config
       );
@@ -259,6 +265,7 @@ export const reset_password_confirm =
         type: PASSWORD_RESET_CONFIRM_SUCCESS,
       });
     } catch (err) {
+      console.log(err);
       dispatch({
         type: PASSWORD_RESET_CONFIRM_FAIL,
       });

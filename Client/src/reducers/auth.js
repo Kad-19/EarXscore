@@ -22,6 +22,8 @@ const initialState = {
   isAuthenticated: null,
   user: null,
   error: null,
+  email: null,
+  message: null,
 };
 
 export default function (state = initialState, action) {
@@ -63,7 +65,6 @@ export default function (state = initialState, action) {
     case LOGOUT:
     case LOGIN_FAIL:
     case SIGNUP_FAIL:
-
       return {
         ...state,
         access: null,
@@ -72,15 +73,31 @@ export default function (state = initialState, action) {
         user: null,
         error: payload,
       };
-    case PASSWORD_RESET_SUCCESS:
     case PASSWORD_RESET_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+    case PASSWORD_RESET_SUCCESS:
+      {return {
+        ...state,
+        email: payload,
+      }}
     case PASSWORD_RESET_CONFIRM_SUCCESS:
     case PASSWORD_RESET_CONFIRM_FAIL:
-    case ACTIVATION_SUCCESS:
-    case ACTIVATION_FAIL:
       return {
         ...state,
       };
+      case ACTIVATION_SUCCESS:
+        return {
+          ...state,
+          message: payload,
+        }
+    case ACTIVATION_FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
     default:
       return state;
   }
