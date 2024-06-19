@@ -15,6 +15,8 @@ import {
   ACTIVATION_SUCCESS,
   ACTIVATION_FAIL,
   LOGOUT,
+  CHANGE_PASSWORD_SUCCESS,
+  CHANGE_PASSWORD_FAIL,
 } from "./types";
 import API_URL from "@/url";
 
@@ -239,6 +241,35 @@ export const reset_password = (email) => async (dispatch) => {
     console.log(err);
     dispatch({
       type: PASSWORD_RESET_FAIL,
+      payload: err.message,
+    });
+  }
+};
+
+export const change_password = (email, oldpassword, newpassword) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const body = JSON.stringify({email, oldpassword, newpassword});
+
+  try {
+    const res = await axios.post(
+      `${API_URL}/auth/change_password`,
+      body,
+      config
+    );
+
+    dispatch({
+      type: CHANGE_PASSWORD_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: CHANGE_PASSWORD_FAIL,
       payload: err.message,
     });
   }

@@ -7,6 +7,7 @@ import { login } from "../../actions/auth";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import ChangePassword from './ChangePassword';
 const LoginPage = ({ user, login, isAuthenticated, error }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +46,7 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
         {user ? (
           <div className="text-6xl font-semibold leading-snug pr-10">
             Welcome {user.user}
-            <br /> <br />
+            <br /> <Button><NavLink to='/changepassword'> Change Password </NavLink></Button><br />
             <p className="back-wave h-40"></p>
           </div>
         ) : (
