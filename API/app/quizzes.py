@@ -152,5 +152,15 @@ def submit_quiz():
 
     return jsonify({'message': f'Score for {difficulty} quiz submitted successfully.'}), 200
 
-#If possible we recommend using headphones which provide more accurate results and tests your right and left ears individually.
-#Adjust the volume of your device to a comfortable level.
+@quiz_bp.route('/quiz/score', methods=['GET', 'POST'])
+def score_quiz():
+    data = request.json
+    user_id = data.get('id')
+    difficulty = data.get('difficulty')
+
+    user = Quiz.query.filter_by(user_id=user_id, difficulty=difficulty).first()
+    if user.score == 10:
+        return jsonify({'message': f'Congratulation, Your Score is {user.score} out of 10, Well Done For Making it to the Next Level.'}), 200
+    else:
+        return jsonify({'message': f'Your Score is {user.score} Out of 10, Sorry, You Didn\'t Passed to the Next Level, You can come back and Try Again.'}), 200
+    
