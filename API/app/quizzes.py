@@ -1,14 +1,11 @@
 import json
-from datetime import datetime, timedelta
-from flask import Blueprint, request, jsonify, url_for, current_app
-from app.models import db, User, Quiz
+from flask import Blueprint, request, jsonify
+from app.models import db, Quiz
 from flask_cors import CORS
-from flask_mail import Mail, Message
-import random, string
+import random
 
 quiz_bp = Blueprint('quiz', __name__)
 CORS(quiz_bp)
-mail = Mail()
 
 # Load quiz data from JSON file
 def load_quiz_data(difficulty):
