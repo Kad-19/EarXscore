@@ -1,0 +1,76 @@
+{
+    "quiz": {
+      "name": "Audio Hearing Test",
+      "difficulty": "hard",
+    "questions": [
+      {
+        "id": 1,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio1.mp3",
+        "correctAnswer": "1"
+      },
+      {
+        "id": 2,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio2.mp3",
+        "correctAnswer": "2"
+      },
+     
+      {
+        "id": 3,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio3.mp3",
+        "correctAnswer": "3"
+      },
+
+      {
+        "id": 4,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio4.mp3",
+        "correctAnswer": "4"
+      },
+      
+      {
+        "id": 5,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio5.mp3",
+        "correctAnswer": "5"
+      },
+      
+      {
+        "id": 6,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio6.mp3",
+        "correctAnswer": "6"
+      },
+
+      {
+        "id": 7,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio7.mp3",
+        "correctAnswer": "7"
+      },
+      
+      {
+        "id": 8,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio8.mp3",
+        "correctAnswer": "8"
+      },
+      
+      {
+        "id": 9,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio9.mp3",
+        "correctAnswer": "9"
+      },
+
+      {
+        "id": 10,
+        "question": "Listen to the audio and type what you hear.",
+        "audio": "audio10.mp3",
+        "correctAnswer": "10"
+      }
+    ]
+  } 
+}
