@@ -5,6 +5,7 @@ import Reg from '../UserAuth/Reg'
 import ForgotPassword from '../UserAuth/ForgotPassword'
 import ResetPassword from '../UserAuth/ResetPassword'
 import ConfirmPasswordReset from '../UserAuth/ConfirmPasswordReset'
+import ChangePassword from '../UserAuth/ChangePassword'
 
 const AllRouting = () => {
   return (
@@ -15,6 +16,7 @@ const AllRouting = () => {
             <Route path='/forgotpassword' element={<ForgotPassword/>}/>
             <Route path='/resetpassword' element={<ResetPassword/>}/>
             <Route path='/confirmpasswordreset' element={<ConfirmPasswordReset/>}/>
+            <Route path='/changepassword' element={<ChangePassword/>}/>
         </Routes>
     </div>
   )

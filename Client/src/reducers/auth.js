@@ -14,6 +14,8 @@ import {
   ACTIVATION_SUCCESS,
   ACTIVATION_FAIL,
   LOGOUT,
+  CHANGE_PASSWORD_SUCCESS,
+  CHANGE_PASSWORD_FAIL,
 } from "../actions/types";
 
 const initialState = {
@@ -22,7 +24,7 @@ const initialState = {
   isAuthenticated: null,
   user: null,
   error: null,
-  email: localStorage.getItem('email'),
+  email: localStorage.getItem("email"),
   message: null,
 };
 
@@ -80,29 +82,41 @@ export default function (state = initialState, action) {
       };
     case PASSWORD_RESET_SUCCESS:
       localStorage.setItem("email", payload);
-      {return {
-        ...state,
-        email: payload,
-      }}
+      {
+        return {
+          ...state,
+          email: payload,
+        };
+      }
     case PASSWORD_RESET_CONFIRM_SUCCESS:
-      return{
+      return {
         ...state,
         message: payload,
-      }
+      };
     case PASSWORD_RESET_CONFIRM_FAIL:
       return {
         ...state,
       };
-      case ACTIVATION_SUCCESS:
-        return {
-          ...state,
-          message: payload,
-        }
+    case ACTIVATION_SUCCESS:
+      return {
+        ...state,
+        message: payload,
+      };
     case ACTIVATION_FAIL:
       return {
         ...state,
         error: payload,
-      }
+      };
+    case CHANGE_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        message: payload,
+      };
+    case CHANGE_PASSWORD_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
     default:
       return state;
   }
