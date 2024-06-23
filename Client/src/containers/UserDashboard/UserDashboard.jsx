@@ -1,8 +1,41 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
-import { NavLink } from "react-router-dom";
+import API_URL from "@/url";
+import axios from "axios";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
+
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [difficulty, setDifficulty] = useState(null);
+
+  const navigate = useNavigate();
+  const fetchQuizzes = async (difficulty) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const id = localStorage.getItem("id");
+
+    const body = JSON.stringify({ id, difficulty });
+
+    try {
+      const res = await axios.post(`${API_URL}/quiz`, body, config);
+      console.log(res);
+      navigate(`/quizz/${difficulty}`);
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(err.response.data.error);
+    }
+  };
+
+  const handleButtonClick = (difficulty)=>{
+    fetchQuizzes(difficulty);
+  }
+
+
   return (
     <div>
       <section className="">
@@ -22,7 +55,7 @@ const UserDashboard = () => {
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="flex flex-col rounded-lg bg-stone-50 px-4 py-8 text-center">
                 <dt className="order-last text-lg font-medium text-gray-500 mt-4">
-                  <Button><NavLink to='/quizz/easy'>Start Quiz</NavLink></Button>
+                  <Button onClick={() => handleButtonClick("easy")}>Start Quiz</Button>
                 </dt>
 
                 <dd className="text-4xl font-extrabold text-secondary md:text-5xl">
@@ -32,7 +65,7 @@ const UserDashboard = () => {
 
               <div className="flex flex-col rounded-lg bg-stone-50 px-4 py-8 text-center">
                 <dt className="order-last text-lg font-medium text-gray-500 mt-4">
-                  <Button><NavLink to='/quizz/medium'>Start Quiz</NavLink></Button>
+                  <Button onClick={() => handleButtonClick("medium")}>Start Quiz</Button>
                 </dt>
 
                 <dd className="text-4xl font-extrabold text-secondary md:text-5xl">
@@ -42,7 +75,7 @@ const UserDashboard = () => {
 
               <div className="flex flex-col rounded-lg bg-stone-50 px-4 py-8 text-center">
                 <dt className="order-last text-lg font-medium text-gray-500 mt-4">
-                  <Button><NavLink to='/quizz/hard'>Start Quiz</NavLink></Button>
+                  <Button onClick={() => handleButtonClick("hard")}>Start Quiz</Button>
                 </dt>
 
                 <dd className="text-4xl font-extrabold text-secondary md:text-5xl">
@@ -50,6 +83,9 @@ const UserDashboard = () => {
                 </dd>
               </div>
             </dl>
+              <div className="my-4">
+                {errorMessage? <div className="text-red-500 text-center w-full">{errorMessage}</div>: ""}
+              </div>
           </div>
         </div>
       </section>

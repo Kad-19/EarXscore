@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import API_URL from "@/url";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
+import AudioPlayer from "./AudioPlayer";
 
-const quiz = {
+let quizz = {
   quiz: {
     name: "Sample Quiz",
     questions: [
@@ -72,25 +75,58 @@ const quiz = {
   },
 };
 
+const Quizz = ({ user, error, isAuthenticated }) => {
+  let { difficulty } = useParams();
 
-const Quizz = () => {
-  let {difficulty} = useParams();
-
+  const [quiz, setQuiz] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [questionData, setQuestionData] = useState({
-    id: quiz.quiz.questions[0].id,
-    title: quiz.quiz.questions[0].question,
-    correctAnswer: quiz.quiz.questions[0].correctAnswer,
+    id: "",
+    title: "",
+    correctAnswer: "",
     num: 1,
+    type: "",
+    audioData: "",
   });
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+  useEffect(() => {
+    if (quiz) {
+      if(quiz.quiz.questions[0].type == 'text'){
+        setQuestionData({
+          id: quiz.quiz.questions[0].id,
+          title: quiz.quiz.questions[0].question,
+          correctAnswer: quiz.quiz.questions[0].correctAnswer,
+          num: 1,
+          type: quiz.quiz.questions[0].type,
+          audioData: ""
+        });
+        
+      }
+      else{
+        setQuestionData({
+          id: quiz.quiz.questions[0].id,
+          title: quiz.quiz.questions[0].question,
+          correctAnswer: quiz.quiz.questions[0].correctAnswer,
+          num: 1,
+          type: quiz.quiz.questions[0].type,
+          audioData: quiz.quiz.questions[0].audioData
+        });
+
+      }
+    }
+  }, [quiz]);
+
+  const { id, title, correctAnswer, num, type, audioData } = questionData;
 
   const [answers, setAnswers] = useState([]);
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [score, setScore] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(300); 
-
-  const { id, title, correctAnswer, num } = questionData;
+  const [timeLeft, setTimeLeft] = useState(300);
+  const [scoreMessage, setScoreMessage] = useState(null);
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -123,81 +159,192 @@ const Quizz = () => {
 
   const handleNextQuestion = () => {
     const nextNum = num + 1;
-    setQuestionData({
-      id: quiz.quiz.questions[nextNum - 1].id,
-      title: quiz.quiz.questions[nextNum - 1].question,
-      correctAnswer: quiz.quiz.questions[nextNum - 1].correctAnswer,
-      num: nextNum,
-    });
+    if(quiz.quiz.questions[nextNum - 1].type == "text"){
+      setQuestionData({
+        id: quiz.quiz.questions[nextNum - 1].id,
+        title: quiz.quiz.questions[nextNum - 1].question,
+        correctAnswer: quiz.quiz.questions[nextNum - 1].correctAnswer,
+        num: nextNum,
+        type: quiz.quiz.questions[nextNum - 1].type,
+        audioData: ""
+      });
+
+    }else{
+      setQuestionData({
+        id: quiz.quiz.questions[nextNum - 1].id,
+        title: quiz.quiz.questions[nextNum - 1].question,
+        correctAnswer: quiz.quiz.questions[nextNum - 1].correctAnswer,
+        num: nextNum,
+        type: quiz.quiz.questions[nextNum - 1].type,
+        audioData: quiz.quiz.questions[nextNum - 1].audioData
+      });
+    }
     setCurrentAnswer("");
     setIsSubmitted(false);
     setFeedback("");
   };
 
-  const handleSubmitQuiz = () => {
-    const totalScore = answers.reduce((score, answer) => {
-      const question = quiz.quiz.questions.find(q => q.id === answer.id);
-      if (question && question.correctAnswer === answer.answer) {
-        return score + 1;
-      }
-      return score;
-    }, 0);
+  const handleSubmitQuiz = async () => {
+    // const totalScore = answers.reduce((score, answer) => {
+    //   const question = quiz.quiz.questions.find((q) => q.id === answer.id);
+    //   if (question && question.correctAnswer === answer.answer) {
+    //     return score + 1;
+    //   }
+    //   return score;
+    // }, 0);
 
-    setScore(totalScore);
-    console.log(answers);
-  };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-  const formattedTime = `${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')}`;
+    const id = localStorage.getItem("id");
 
-  const fetchQuizzes = async () => {
-    
-    try{
-      const res = await axios.get(
-        `${API_URL}/quiz`,
-      );
-    }catch (err){
+    const body = JSON.stringify({id, difficulty, answers});
+    console.log(body);
+
+    try {
+      const res = await axios.post(`${API_URL}/quiz/submit`, body, config);
+      console.log(res);
+      fetchScore();
+    } catch (err) {
       console.log(err);
+      setErrorMessage(err.response.data.error);
     }
   };
 
+  const fetchScore = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const id = localStorage.getItem("id");
+
+    const body = JSON.stringify({id, difficulty});
+
+    try {
+      const res = await axios.post(`${API_URL}/quiz/score`, body, config);
+      console.log(res);
+      setScoreMessage(res.data.message);
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(err.response.data.error);
+    }
+  }
+
+  const formattedTime = `${Math.floor(timeLeft / 60)}:${String(
+    timeLeft % 60
+  ).padStart(2, "0")}`;
+
+  const fetchQuizzes = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const id = localStorage.getItem("id");
+
+    const body = JSON.stringify({ id, difficulty });
+
+    try {
+      const res = await axios.post(`${API_URL}/quiz`, body, config);
+      console.log(res);
+      setQuiz(res.data);
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(err.response.data.error);
+    }
+  };
+
+  const fetchAudio = () => {
+    
+  }
+
   return (
-    <div className="flex gap-6 mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
-      {score === null ? (
-        <div>
-          <div>
-            <p>Question {num} of 10</p>
-            <p>Time remaining: {formattedTime}</p>
-          </div>
-          <div>
-            <p>{title}</p>
-            <button>Play Audio</button>
-            <hr />
-            <p>Answer</p>
-            <input 
-              className="bg-white" 
-              value={currentAnswer} 
-              onChange={handleAnswerChange} 
-              disabled={isSubmitted}
-            />
-            <button onClick={handleSubmit} disabled={isSubmitted}>Submit</button>
-            {feedback && <p>{feedback}</p>}
-            <div className="my-2 flex gap-2">
-              {num < 10 ? (
-                <button onClick={handleNextQuestion} disabled={!isSubmitted}>Next</button>
-              ) : (
-                <button onClick={handleSubmitQuiz} disabled={!isSubmitted}>Submit Quiz</button>
-              )}
-            </div>
-          </div>
-        </div>
+    <div className="flex items-center w-full justify-center h-screen">
+      {errorMessage ? (
+        <div>{errorMessage}</div>
       ) : (
-        <div>
-          <h1>Your Score: {score} out of 10</h1>
-          {score < 6 ? <p>You are deaf. Don't even bother going to hospital </p> :""}
+        <div className=" w-[80%] flex gap-6 mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+          {scoreMessage === null ? (
+            <div className="flex gap-16">
+              <div>
+                <p className="text-4xl font-extrabold text-secondary md:text-5xl">
+                  Question {num} of 10
+                </p>
+                <p className="text-2xl font-medium text-secondary md:text-3xl my-3">
+                  {title}
+                </p>
+                <Button onClick={() => fetchAudio()}>Play Audio</Button>
+                {type == "text"? "": <AudioPlayer base64Audio={audioData}/>}
+                <hr className="bg-primary text-primary h-1 my-2" />
+                <p className="text-2xl font-extrabold text-secondary md:text-3xl">
+                  Answer
+                </p>
+                <div className="flex gap-3 items-center">
+                  <Input
+                    className="bg-white my-2"
+                    value={currentAnswer}
+                    onChange={handleAnswerChange}
+                    disabled={isSubmitted}
+                  />
+                  <Button onClick={handleSubmit} disabled={isSubmitted}>
+                    Submit
+                  </Button>
+                </div>
+                <div>
+
+                {feedback && <p className={feedback == 'Wrong'? 'text-red-400 text-2xl font-bold': 'text-green-400 text-2xl font-bold'}>{feedback}</p>}
+                </div>
+                <div className="my-2 flex gap-2">
+                  {num < 10 ? (
+                    <Button
+                      onClick={handleNextQuestion}
+                      disabled={!isSubmitted}
+                      className="bg-secondary"
+                    >
+                      Next
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSubmitQuiz}
+                      disabled={!isSubmitted}
+                      className="bg-secondary"
+                    >
+                      Submit Quiz
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <p className="text-xl font-medium text-secondary md:text-2xl">
+                Time remaining: {formattedTime}
+              </p>
+            </div>
+          ) : (
+            <div>
+              <h1 className="font-bold text-secondary text-2xl text-center">{scoreMessage}</h1>
+              {/* {score < 6 ? (
+                <p>You are deaf. Don't even bother going to hospital </p>
+              ) : (
+                ""
+              )} */}
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 };
 
-export default Quizz;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  error: state.auth.error,
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(Quizz);

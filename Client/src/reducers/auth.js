@@ -26,6 +26,7 @@ const initialState = {
   error: null,
   email: localStorage.getItem("email"),
   message: null,
+  id: localStorage.getItem("id"),
 };
 
 export default function (state = initialState, action) {
@@ -38,6 +39,7 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
       };
     case LOGIN_SUCCESS:
+      localStorage.setItem("id", payload.id);
       return {
         ...state,
         isAuthenticated: true,

@@ -33,6 +33,7 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
       if (user) {
         console.log(user);
         setIsLoading(false);
+        navigate("/userdashboard");
       }
     }
     if (error) {
@@ -76,10 +77,10 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
               <label htmlFor="" className="w-[110px] font-medium">
                 Email
               </label>
-              <div class="relative my-1">
+              <div className="relative my-1">
                 <Input
                   type="email"
-                  class="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
+                  className="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
                   placeholder="Enter email"
                   name="email"
                   value={email}
@@ -87,7 +88,7 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
                   required
                 />
 
-                <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
+                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                   <MdOutlineMail className="" />
                 </span>
               </div>
@@ -97,10 +98,10 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
                 {" "}
                 Password
               </label>
-              <div class="relative my-1">
+              <div className="relative my-1">
                 <Input
                   type="password"
-                  class="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
+                  className="w-full rounded-lg border-gray-200 bg-stone-200 p-3 pe-12 text-sm shadow-sm border"
                   placeholder="Enter password"
                   name="password"
                   value={password}
@@ -108,7 +109,7 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
                   required
                 />
 
-                <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
+                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                   <RiLockPasswordLine className="" />
                 </span>
               </div>
