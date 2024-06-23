@@ -1,7 +1,7 @@
 {
     "quiz": {
       "name": "Audio Hearing Test",
-      "difficulty": "easy",
+      "difficulty": "medium",
     "questions": [
       {
         "id": 1,

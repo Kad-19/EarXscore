@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, request, jsonify
 from app.models import db, Quiz
 from flask_cors import CORS
-import random
+import random, os, base64
 
 quiz_bp = Blueprint('quiz', __name__)
 CORS(quiz_bp)
@@ -46,6 +46,14 @@ def check_eligibility(user_id, difficulty):
                 return True
     return "Invalid difficulty"
 
+def encode_audio_files(questions):
+    for question in questions:
+        if question["type"] == "audio":
+            file_path = os.path.join('audio', question["audio"])
+            with open(file_path, "rb") as audio_file:
+                encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
+                question["audioData"] = encoded_string
+
 
 # Endpoint to fetch quiz data
 @quiz_bp.route('/quiz', methods=['POST', 'GET'], strict_slashes=False)
@@ -63,6 +71,7 @@ def get_quiz():
         
         if difficulty == "easy":
             quiz_data = load_quiz_data(difficulty)
+            encode_audio_files(quiz_data["quiz"]["questions"])
             return jsonify(quiz_data)
         # For a new user, only allow 'easy' difficulty
         return "First time to quiz, You have to play Easy"
@@ -70,6 +79,7 @@ def get_quiz():
     elif user_quizzes:
         if difficulty == 'easy':
             quiz_data = load_quiz_data(difficulty)
+            encode_audio_files(quiz_data["quiz"]["questions"])
             return jsonify(quiz_data)
     
         elif difficulty == 'medium':
