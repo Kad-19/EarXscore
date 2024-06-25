@@ -17,6 +17,7 @@ import {
   LOGOUT,
   CHANGE_PASSWORD_SUCCESS,
   CHANGE_PASSWORD_FAIL,
+  REFRESH,
 } from "./types";
 import API_URL from "@/url";
 
@@ -227,15 +228,15 @@ export const reset_password = (email) => async (dispatch) => {
   const body = JSON.stringify({ email });
 
   try {
-    await axios.post(
+    const res = await axios.post(
       `${API_URL}/auth/forget_password`,
       body,
       config
     );
-
+    localStorage.setItem("email", email);
     dispatch({
       type: PASSWORD_RESET_SUCCESS,
-      payload: email,
+      payload: res.data,
     });
   } catch (err) {
     console.log(err);
@@ -307,5 +308,10 @@ export const reset_password_confirm =
 export const logout = () => (dispatch) => {
   dispatch({
     type: LOGOUT,
+  });
+};
+export const refresh = () => (dispatch) => {
+  dispatch({
+    type: REFRESH,
   });
 };

@@ -16,11 +16,10 @@ import {
   LOGOUT,
   CHANGE_PASSWORD_SUCCESS,
   CHANGE_PASSWORD_FAIL,
+  REFRESH,
 } from "../actions/types";
 
 const initialState = {
-  access: localStorage.getItem("access"),
-  refresh: localStorage.getItem("refresh"),
   isAuthenticated: null,
   user: null,
   error: null,
@@ -67,12 +66,21 @@ export default function (state = initialState, action) {
         user: null,
       };
     case LOGOUT:
+      localStorage.setItem("id", null);
+      localStorage.setItem("email", null);
+      return {
+        ...state,
+        isAuthenticated: null,
+        user: null,
+        error: null,
+        email: null,
+        message: null,
+        id: null,
+      };
     case LOGIN_FAIL:
     case SIGNUP_FAIL:
       return {
         ...state,
-        access: null,
-        refresh: null,
         isAuthenticated: false,
         user: null,
         error: payload,
@@ -82,14 +90,13 @@ export default function (state = initialState, action) {
         ...state,
         error: payload,
       };
-    case PASSWORD_RESET_SUCCESS:
-      localStorage.setItem("email", payload);
-      {
-        return {
-          ...state,
-          email: payload,
-        };
-      }
+    case PASSWORD_RESET_SUCCESS: {
+      return {
+        ...state,
+        email: localStorage.getItem("email"),
+        message: payload,
+      };
+    }
     case PASSWORD_RESET_CONFIRM_SUCCESS:
       return {
         ...state,
@@ -118,6 +125,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         error: payload,
+      };
+    case REFRESH:
+      return {
+        ...state,
+        error: null,
+        message: null,
       };
     default:
       return state;

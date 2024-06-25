@@ -36,18 +36,8 @@ const ResetPassword = ({ error, email, reset_password_confirm, message }) => {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if(error) {
-        setErrorMessage(error.error);
-        setIsLoading(false);
-    }
-  })
+  
 
-  useEffect(() => {
-    if(message){
-        setErrorMessage(message.message);
-    }
-  }, [message]);
   return (
     <div className="flex items-center w-full justify-center h-screen">
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 border border-y-2 border-y-secondary">

@@ -3,12 +3,12 @@ import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { login } from "../../actions/auth";
+import { login, refresh } from "../../actions/auth";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ChangePassword from './ChangePassword';
-const LoginPage = ({ user, login, isAuthenticated, error }) => {
+const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,6 +40,10 @@ const LoginPage = ({ user, login, isAuthenticated, error }) => {
       setIsLoading(false);
     }
   });
+
+  useEffect(() => {
+    refresh();
+  }, [])
 
   return (
     <div className="flex items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 gap-24 flex-wrap">
@@ -160,4 +164,4 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { login })(LoginPage);
+export default connect(mapStateToProps, { login, refresh })(LoginPage);

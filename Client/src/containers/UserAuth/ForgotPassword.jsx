@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { reset_password } from "@/actions/auth";
-const ForgotPassword = ({ error, reset_password, re_email }) => {
+const ForgotPassword = ({ error, reset_password, re_email, message }) => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -28,12 +28,15 @@ const ForgotPassword = ({ error, reset_password, re_email }) => {
     
     setIsLoading(false);
   };
-
+  
   useEffect(() => {
-    if (re_email == email) {
-    //   navigate("/confirmpasswordreset");
+    if(message){
+      if(message.message == "a reset code has been sent"){
+        navigate("/confirmpasswordreset");
+
+      }
     }
-  }, [re_email]);
+  }, [message]);
   return (
     <div className="flex items-center w-full justify-center h-screen">
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 border border-y-2 border-y-secondary">
@@ -102,6 +105,7 @@ const ForgotPassword = ({ error, reset_password, re_email }) => {
 const mapStateToProps = (state) => ({
   error: state.auth.error,
   re_email: state.auth.email,
+  message: state.auth.message,
 });
 
 export default connect(mapStateToProps, { reset_password })(ForgotPassword);

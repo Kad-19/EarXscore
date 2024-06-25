@@ -8,6 +8,9 @@ import ConfirmPasswordReset from '../UserAuth/ConfirmPasswordReset'
 import ChangePassword from '../UserAuth/ChangePassword'
 import UserDashboard from '../UserDashboard/UserDashboard'
 import Quizz from '../Quizes/Quizz'
+import Score from '../Quizes/Score'
+import About from '../About/About'
+import Footer from '../Footer/Footer'
 
 const AllRouting = () => {
   return (
@@ -21,7 +24,10 @@ const AllRouting = () => {
             <Route path='/changepassword' element={<ChangePassword/>}/>
             <Route path='/userdashboard' element={<UserDashboard/>}/>
             <Route path='/quizz/:difficulty' element={<Quizz/>}/>
+            <Route path='/score/:result' element={<Score/>}/>
+            <Route path='/about' element={<About/>}/>
         </Routes>
+        <Footer/>
     </div>
   )
 }

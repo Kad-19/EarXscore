@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { reset_password, verify } from "@/actions/auth";
 const ConfirmPasswordReset = ({ error, verify, message, email }) => {
   const navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -32,10 +33,14 @@ const ConfirmPasswordReset = ({ error, verify, message, email }) => {
     await verify(otp, email);
 
     setIsLoading(false);
+    
   };
   useEffect(() => {
     if(message){
-      navigate("/resetpassword");
+      if(message.message == "Verification Success"){
+
+        navigate("/resetpassword");
+      }
     }
   }, [message]);
 

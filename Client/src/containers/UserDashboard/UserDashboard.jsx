@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
 import API_URL from "@/url";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import Navbar from "../Navbar/Navbar";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const UserDashboard = () => {
+  const {toast} = useToast();
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
@@ -35,11 +39,25 @@ const UserDashboard = () => {
     fetchQuizzes(difficulty);
   }
 
+  useEffect(() => {
+    if(errorMessage){
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: errorMessage,
+      })
+    }
+  }, [errorMessage]);
+
+  // localStorage.setItem("current_question", 0);
+  // localStorage.setItem("time_remaining", 0);
+
 
   return (
     <div>
+      <Navbar/>
       <section className="">
-        <div className="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+        <div className="mx-auto max-w-screen-xl min-h-[40rem] px-4 py-12 sm:px-6 md:py-16 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
               Your dashboard
@@ -83,9 +101,7 @@ const UserDashboard = () => {
                 </dd>
               </div>
             </dl>
-              <div className="my-4">
-                {errorMessage? <div className="text-red-500 text-center w-full">{errorMessage}</div>: ""}
-              </div>
+              
           </div>
         </div>
       </section>
