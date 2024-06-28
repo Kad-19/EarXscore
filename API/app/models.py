@@ -1,7 +1,7 @@
 # Database models(tables) to be created in our database using flask migration
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String
+
 
 db = SQLAlchemy()
 
