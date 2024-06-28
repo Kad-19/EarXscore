@@ -84,9 +84,7 @@ def get_quiz():
                 "answer": audio_answer
                 }
             return jsonify(response)
-            
-            
-            
+
         # For a new user, only allow 'easy' difficulty
         return "First time to quiz, You have to play Easy"
     
@@ -192,7 +190,7 @@ def calculate_score(difficulty, user_answers):
 
         for question in questions:
             if id == question['id']:  # Accessing question properties correctly
-                if answer == question['correctAnswer']:  # Accessing the correct answer property
+                if answer.lower() == question['correctAnswer'].lower():  # making answer case-insensative and checking correct answer
                     score += 1  # Increment the score for correct answers
                 break  # Exit the inner loop once the question is found
 
