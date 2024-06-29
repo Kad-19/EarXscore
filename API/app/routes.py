@@ -23,9 +23,9 @@ def register():
     if not username or not email or not password:
         return jsonify({'error': 'Missing username, email, or password'}), 400
 
-    existing_user = User.query.filter_by(username=username).first()
+    existing_user = User.query.filter_by(email=email, username=username).first()
     if existing_user:
-        return jsonify({'error': 'Username already exists'}), 400
+        return jsonify({'error': 'User already exists'}), 400
 
     new_user = User(username=username, email=email, password=hashed_password)
     db.session.add(new_user)
@@ -75,6 +75,8 @@ def forgot():
     
     user = User.query.filter_by(email=email).first()
     
+    if not user:
+        return jsonify({'error': "An Account With This Email Doesn't Exist"}), 400
     if user:
         otp = ''.join(random.choices(string.digits, k=6))
         user.otp = otp

@@ -1,8 +1,9 @@
 import json
 from flask import Blueprint, request, jsonify
+from gtts import gTTS
 from app.models import db, Quiz
 from flask_cors import CORS
-import random, os, base64
+import random, base64
 
 quiz_bp = Blueprint('quiz', __name__)
 CORS(quiz_bp)
@@ -14,21 +15,21 @@ def load_quiz_data(difficulty):
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
             random.shuffle(questions)  # Shuffle the list of questions
-            quiz_data['quiz']['questions'] = questions  # Update shuffled questions in quiz_data
+            quiz_data['questions'] = questions  # Update shuffled questions in quiz_data
         return quiz_data
     elif difficulty == "medium":
         with open('medquiz.json', 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
             random.shuffle(questions)  # Shuffle the list of questions
-            quiz_data['quiz']['questions'] = questions  # Update shuffled questions in quiz_data
+            quiz_data['questions'] = questions  # Update shuffled questions in quiz_data
         return quiz_data
     elif difficulty == "hard":
         with open('hardquiz.json', 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
             random.shuffle(questions)  # Shuffle the list of questions
-            quiz_data['quiz']['questions'] = questions  # Update shuffled questions in quiz_data
+            quiz_data['questions'] = questions  # Update shuffled questions in quiz_data
         return quiz_data
 
 def check_eligibility(user_id, difficulty):
@@ -46,13 +47,10 @@ def check_eligibility(user_id, difficulty):
                 return True
     return "Invalid difficulty"
 
-def encode_audio_files(questions):
-    for question in questions:
-        if question["type"] == "audio":
-            file_path = os.path.join('audio', question["audio"])
-            with open(file_path, "rb") as audio_file:
-                encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
-                question["audioData"] = encoded_string
+def encode_audio_files(file_path):
+    with open(file_path, "rb") as audio_file:
+        encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
+        return encoded_string
 
 
 # Endpoint to fetch quiz data
@@ -71,23 +69,64 @@ def get_quiz():
         
         if difficulty == "easy":
             quiz_data = load_quiz_data(difficulty)
-            encode_audio_files(quiz_data["quiz"]["questions"])
-            return jsonify(quiz_data)
+            quiz = random.choice(quiz_data['questions'])
+            audio_id = quiz['id']
+            audio_text = quiz['audio']
+            audio_answer = quiz['correctAnswer']
+            tts = gTTS(text=audio_text, lang='en')
+            file = './audio/easy.mp3'
+            tts.save(file)
+            encoded = encode_audio_files(file)
+            
+            response = {
+                "id": audio_id,
+                "audio": encoded,
+                "answer": audio_answer
+                }
+            return jsonify(response)
+
         # For a new user, only allow 'easy' difficulty
         return "First time to quiz, You have to play Easy"
     
     elif user_quizzes:
         if difficulty == 'easy':
             quiz_data = load_quiz_data(difficulty)
-            encode_audio_files(quiz_data["quiz"]["questions"])
-            return jsonify(quiz_data)
+            quiz = random.choice(quiz_data['questions'])
+            audio_id = quiz['id']
+            audio_text = quiz['audio']
+            audio_answer = quiz['correctAnswer']
+            tts = gTTS(text=audio_text, lang='en')
+            file = './audio/easy.mp3'
+            tts.save(file)
+            encoded = encode_audio_files(file)
+            
+            response = {
+                "id": audio_id,
+                "audio": encoded,
+                "answer": audio_answer
+                }
+            return jsonify(response)
     
         elif difficulty == 'medium':
             check = check_eligibility(id, difficulty)
         
             if check is True:
                 quiz_data = load_quiz_data(difficulty)
-                return jsonify(quiz_data)
+                quiz = random.choice(quiz_data['questions'])
+                audio_id = quiz['id']
+                audio_text = quiz['audio']
+                audio_answer = quiz['correctAnswer']
+                tts = gTTS(text=audio_text, lang='en')
+                file = './audio/easy.mp3'
+                tts.save(file)
+                encoded = encode_audio_files(file)
+            
+                response = {
+                    "id": audio_id,
+                    "audio": encoded,
+                    "answer": audio_answer
+                    }
+                return jsonify(response)
             else:
                 return jsonify({'error': f'You need to score 10/10 in the previous level to access {difficulty} quiz.'}), 403
         elif difficulty == 'hard':
@@ -95,7 +134,21 @@ def get_quiz():
         
             if check is True:
                 quiz_data = load_quiz_data(difficulty)
-                return jsonify(quiz_data)
+                quiz = random.choice(quiz_data['questions'])
+                audio_id = quiz['id']
+                audio_text = quiz['audio']
+                audio_answer = quiz['correctAnswer']
+                tts = gTTS(text=audio_text, lang='en')
+                file = './audio/easy.mp3'
+                tts.save(file)
+                encoded = encode_audio_files(file)
+            
+                response = {
+                    "id": audio_id,
+                    "audio": encoded,
+                    "answer": audio_answer
+                    }
+                return jsonify(response)
             else:
                 return jsonify({'error': f'You need to score 10/10 in the previous level to access {difficulty} quiz.'}), 403
         else:
@@ -137,7 +190,7 @@ def calculate_score(difficulty, user_answers):
 
         for question in questions:
             if id == question['id']:  # Accessing question properties correctly
-                if answer == question['correctAnswer']:  # Accessing the correct answer property
+                if answer.lower() == question['correctAnswer'].lower():  # making answer case-insensative and checking correct answer
                     score += 1  # Increment the score for correct answers
                 break  # Exit the inner loop once the question is found
 
