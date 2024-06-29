@@ -11,6 +11,7 @@ import Quizz from '../Quizes/Quizz'
 import Score from '../Quizes/Score'
 import About from '../About/About'
 import Footer from '../Footer/Footer'
+import Blogs from '../Blogs/Blogs'
 
 const AllRouting = () => {
   return (
@@ -26,6 +27,7 @@ const AllRouting = () => {
             <Route path='/quizz/:difficulty' element={<Quizz/>}/>
             <Route path='/score/:result' element={<Score/>}/>
             <Route path='/about' element={<About/>}/>
+            <Route path='/blogs' element={<Blogs/>}/>
         </Routes>
         <Footer/>
     </div>

@@ -247,14 +247,14 @@ export const reset_password = (email) => async (dispatch) => {
   }
 };
 
-export const change_password = (email, oldpassword, newpassword) => async (dispatch) => {
+export const change_password = (email, password, new_password) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
 
-  const body = JSON.stringify({email, oldpassword, newpassword});
+  const body = JSON.stringify({email, password, new_password});
 
   try {
     const res = await axios.post(

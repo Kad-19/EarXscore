@@ -1,5 +1,5 @@
-import { logout } from "@/actions/auth";
-import React from "react";
+import { change_password, logout } from "@/actions/auth";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
@@ -21,9 +21,60 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
+import API_URL from "@/url";
 
-const Navbar = ({ logout }) => {
+const Navbar = ({ logout, user }) => {
+  const {toast} = useToast();
+
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [difficulty, setDifficulty] = useState(null);
+
   const navigate = useNavigate();
+  const fetchQuizzes = async (difficulty) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const id = localStorage.getItem("id");
+
+    const body = JSON.stringify({ id, difficulty });
+
+    try {
+      const res = await axios.post(`${API_URL}/quiz`, body, config);
+      console.log(res);
+      navigate(`/quizz/${difficulty}`);
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(err.response.data.error);
+    }
+  };
+
+  const handleButtonClick = (difficulty)=>{
+    fetchQuizzes(difficulty);
+  }
+
+  useEffect(() => {
+    if(errorMessage){
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: errorMessage,
+      })
+    }
+  }, [errorMessage]);
+
   const onLogoutClick = () => {
     logout();
     navigate("/");
@@ -109,14 +160,23 @@ const Navbar = ({ logout }) => {
                 className="py-3 ps-px sm:px-3 font-medium text-gray-500 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500"
                 href="#"
               >
-                Quiz
+                <DropdownMenu>
+                  <DropdownMenuTrigger>Quiz</DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Choose Difficulty</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => handleButtonClick("easy")}>Easy</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleButtonClick("medium")}>Medium</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleButtonClick("hard")}>Hard</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </a>
-              <a
+              <NavLink
                 className="py-3 ps-px sm:px-3 font-medium text-gray-500 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500"
-                href="#"
+                to='/blogs'
               >
                 Blog
-              </a>
+              </NavLink>
 
               <a
                 className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-blue-600 md:border-s md:border-gray-300 py-2 md:py-0 md:my-6 md:ps-6 dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-blue-500"
@@ -141,13 +201,86 @@ const Navbar = ({ logout }) => {
                         <circle cx="12" cy="7" r="4" />
                       </svg>
                     </SheetTrigger>
-                    <SheetContent>
+                    <SheetContent className="bg-white">
                       <SheetHeader>
-                        <SheetTitle>Are you absolutely sure?</SheetTitle>
+                        <SheetTitle>
+                          <span className="grid h-10 w-32 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
+                            Logo
+                          </span>
+                        </SheetTitle>
                         <SheetDescription>
-                          This action cannot be undone. This will permanently
-                          delete your account and remove your data from our
-                          servers.
+                          <div className="flex h-screen flex-col justify-between border-e bg-white">
+                            <div className="px-4 py-6">
+                              <ul className="mt-6 space-y-1">
+                                <li>
+                                  <a
+                                    href="#"
+                                    className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
+                                  >
+                                    User Name:{" "}
+                                    <span>{user ? user.user : ""}</span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a
+                                    href="#"
+                                    className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
+                                  >
+                                    Email: <span>{user ? user.email : ""}</span>
+                                  </a>
+                                </li>
+
+                                <li>
+                                  <details className="group [&_summary::-webkit-details-marker]:hidden">
+                                    <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                      <span className="text-sm font-medium">
+                                        {" "}
+                                        Account{" "}
+                                      </span>
+
+                                      <span className="shrink-0 transition duration-300 group-open:-rotate-180">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="h-5 w-5"
+                                          viewBox="0 0 20 20"
+                                          fill="currentColor"
+                                        >
+                                          <path
+                                            fillRule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                          />
+                                        </svg>
+                                      </span>
+                                    </summary>
+
+                                    <ul className="mt-2 space-y-1 px-4">
+                                      <li>
+                                        <NavLink
+                                          to="/changepassword"
+                                          className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                                        >
+                                          Change Password
+                                        </NavLink>
+                                      </li>
+
+                                      <li>
+                                        <form action="#">
+                                          <button
+                                            onClick={() => onLogoutClick()}
+                                            type="submit"
+                                            className="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 [text-align:_inherit] hover:bg-gray-100 hover:text-gray-700"
+                                          >
+                                            Logout
+                                          </button>
+                                        </form>
+                                      </li>
+                                    </ul>
+                                  </details>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
                         </SheetDescription>
                       </SheetHeader>
                     </SheetContent>
@@ -158,7 +291,6 @@ const Navbar = ({ logout }) => {
                 className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-blue-600 py-2 md:py-0 md:my-6 md:ps-6 dark:text-neutral-400 dark:hover:text-blue-500"
                 href="#"
               >
-
                 <span>
                   <AlertDialog>
                     <AlertDialogTrigger>Log out</AlertDialogTrigger>

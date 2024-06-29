@@ -7,9 +7,10 @@ import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { change_password } from "@/actions/auth";
 import { RiLockPasswordLine } from "react-icons/ri";
-const ChangePassword = ({ error, email, change_password, message }) => {
+import Navbar from "../Navbar/Navbar";
+const ChangePassword = ({ error, email, change_password, message, user }) => {
   const navigate = useNavigate();
-    const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     oldpassword: "",
@@ -26,44 +27,43 @@ const ChangePassword = ({ error, email, change_password, message }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // await reset_password(email);
-    if(password == confirmpassword){
-        await reset_password_confirm(email, password);
-        navigate("/");
-    }
-    else{
-        setErrorMessage("Password and confirm password don't match");
+    if (password == confirmpassword) {
+      await user;
+      await change_password(user.email, oldpassword, password);
+      navigate("/");
+    } else {
+      setErrorMessage("Password and confirm password don't match");
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    if(error) {
-        setErrorMessage(error.error);
-        setIsLoading(false);
+    if (error) {
+      setErrorMessage(error.error);
+      setIsLoading(false);
     }
-  })
+  });
 
   useEffect(() => {
-    if(message){
-        setErrorMessage(message.message);
+    if (message) {
+      setErrorMessage(message.message);
     }
   }, [message]);
   return (
+    <div>
+      <Navbar/>
     <div className="flex items-center w-full justify-center h-screen">
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 border border-y-2 border-y-secondary">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-primary md:text-2xl dark:text-white">
             Enter your new password
           </h1>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            
-          </p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400"></p>
           <form
             onSubmit={(e) => onSubmit(e)}
             className="space-y-4 md:space-y-2"
           >
-           <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
+            <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
               <label htmlFor="" className=" font-medium">
                 {" "}
                 Old Password
@@ -84,7 +84,7 @@ const ChangePassword = ({ error, email, change_password, message }) => {
                 </span>
               </div>
             </div>
-           <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
+            <div className="relative my-7 flex flex-wrap text-[18px] flex-col">
               <label htmlFor="" className=" font-medium">
                 {" "}
                 New Password
@@ -153,6 +153,8 @@ const ChangePassword = ({ error, email, change_password, message }) => {
         </div>
       </div>
     </div>
+
+    </div>
   );
 };
 
@@ -160,6 +162,7 @@ const mapStateToProps = (state) => ({
   error: state.auth.error,
   email: state.auth.email,
   message: state.auth.message,
+  user: state.auth.user,
 });
 
 export default connect(mapStateToProps, { change_password })(ChangePassword);
