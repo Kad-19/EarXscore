@@ -40,7 +40,7 @@ After the development phase, we each wrote a blog post to reflect on the PuppR j
 
 -> [**EarXScore**](https://link)
 
-Here is a little preview of our main feature, the swiping through other dogs' profiles:
+Here is a little preview of our main feature
 
 /_ pic _/
 
