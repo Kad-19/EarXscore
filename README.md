@@ -1,6 +1,7 @@
 # EarXScore ~ _Healthy Ear, Amazing Communication_
 
-![logo](/images/logo.png)
+![Earphones Facebook Cover](https://github.com/Kad-19/EarXscore/assets/84915133/b62a28c6-4db4-49b5-b90b-b9e47a906249)
+
 
 # Introduction
 
