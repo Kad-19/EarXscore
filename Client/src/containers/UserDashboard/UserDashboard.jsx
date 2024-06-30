@@ -6,8 +6,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { connect } from "react-redux";
 
-const UserDashboard = () => {
+const UserDashboard = ({isAuthenticated}) => {
   const {toast} = useToast();
 
   const [errorMessage, setErrorMessage] = useState(null);
@@ -37,6 +38,10 @@ const UserDashboard = () => {
 
   const handleButtonClick = (difficulty)=>{
     fetchQuizzes(difficulty);
+    localStorage.setItem("current_question", 0);
+    const answers = [];
+    const stringifiedAnswers = JSON.stringify(answers)
+    localStorage.setItem("answers", stringifiedAnswers);
   }
 
   useEffect(() => {
@@ -48,9 +53,17 @@ const UserDashboard = () => {
       })
     }
   }, [errorMessage]);
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      console.log(isAuthenticated);
+      if(!isAuthenticated){
+        navigate("/");
+      }
+    }
+    checkAuth();
+  }, [isAuthenticated]);
 
-  // localStorage.setItem("current_question", 0);
-  // localStorage.setItem("time_remaining", 0);
 
 
   return (
@@ -109,4 +122,10 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  error: state.auth.error,
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(UserDashboard);

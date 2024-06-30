@@ -12,6 +12,10 @@ import Score from '../Quizes/Score'
 import About from '../About/About'
 import Footer from '../Footer/Footer'
 import Blogs from '../Blogs/Blogs'
+import Page0 from '../Blogs/BlogsPages/Page0'
+import Page1 from '../Blogs/BlogsPages/Page1'
+import Page2 from './../Blogs/BlogsPages/Page2'
+import Home from '../Landing/Home'
 
 const AllRouting = () => {
   return (
@@ -28,6 +32,10 @@ const AllRouting = () => {
             <Route path='/score/:result' element={<Score/>}/>
             <Route path='/about' element={<About/>}/>
             <Route path='/blogs' element={<Blogs/>}/>
+            <Route path='/blogs/page0' element={<Page0/>}/>
+            <Route path='/blogs/page1' element={<Page1/>}/>
+            <Route path='/blogs/page2' element={<Page2/>}/>
+            <Route path='/home' element={<Home/>}/>
         </Routes>
         <Footer/>
     </div>

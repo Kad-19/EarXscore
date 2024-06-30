@@ -1,126 +1,124 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
+import { NavLink } from "react-router-dom";
 
 const Blogs = () => {
   return (
     <div>
-        <Navbar/>
-      <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <div class="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
-          <h2 class="text-2xl font-bold md:text-4xl md:leading-tight">
+      <Navbar />
+      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
+          <h2 className="text-2xl font-bold md:text-4xl md:leading-tight">
             The Blog
           </h2>
-          <p class="mt-1 text-gray-600">
-            See how game-changing companies are making the most of every
-            engagement with Preline.
-          </p>
         </div>
 
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
-          <a
-            class="bg-slate-50 group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5"
-            href="#"
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+          <NavLink
+            className="bg-slate-50 group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5"
+            to='page0'
           >
-            <div class="aspect-w-16 aspect-h-11">
+            <div className="aspect-w-16 aspect-h-11">
               <img
-                class="w-full object-cover rounded-xl"
-                src="https://images.unsplash.com/photo-1633114128174-2f8aa49759b0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+                className="w-full object-cover rounded-xl"
+                src="/images/pexels-anastasia-shuraeva-7673858.jpg"
                 alt="Image Description"
               />
             </div>
-            <div class="my-6">
-              <h3 class="text-xl font-semibold text-gray-800">
-                Announcing a free plan for small teams
+            <div className="my-6">
+              <h3 className="text-xl font-semibold text-gray-800">
+                Top 10 Tips for Maintaining Healthy Ears
               </h3>
-              <p class="mt-5 text-gray-600">
-                At Wake, our mission has always been focused on bringing
-                openness.
+              <p className="mt-5 text-gray-600">
+                Maintaining healthy ears is crucial for overall well-being and
+                ensuring that one of our primary senses, hearing, remains sharp
+                throughout our lives. Here are the top 10 tips for keeping your
+                ears in great shape
               </p>
             </div>
-            <div class="mt-auto flex items-center gap-x-3">
-              <img
-                class="size-8 rounded-full"
-                src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                alt="Image Description"
-              />
-              <div>
-                <h5 class="text-sm text-gray-800">By Lauren Waller</h5>
-              </div>
+            <div className="mt-auto flex items-center gap-x-3">
+              <span className="font-semibold text-gray-800 flex gap-2 items-center">
+                <span>
+                  <img src="/favicon-32x32.png" />
+                </span>
+                <span>EarXScore</span>
+              </span>
             </div>
-          </a>
+          </NavLink>
 
-          <a
-            class="bg-slate-50 group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5"
-            href="#"
+          <NavLink
+            className="bg-slate-50 group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5"
+            to='page1'
           >
-            <div class="aspect-w-16 aspect-h-11">
+            <div className="aspect-w-16 aspect-h-11">
               <img
-                class="w-full object-cover rounded-xl"
-                src="https://images.unsplash.com/photo-1562851529-c370841f6536?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
+                className="w-full object-cover rounded-xl"
+                src="/images/pexels-sound-on-3760694.jpg"
                 alt="Image Description"
               />
             </div>
-            <div class="my-6">
-              <h3 class="text-xl font-semibold text-gray-800">
-                How Google Assistant now helps you record stories for kids
+            <div className="my-6">
+              <h3 className="text-xl font-semibold text-gray-800">
+                The Importance of Regular Ear Check-Ups
               </h3>
-              <p class="mt-5 text-gray-600">
-                Google is constantly updating its consumer AI, Google Assistant,
-                with new features.
+              <p className="mt-5 text-gray-600">
+                Regular ear check-ups are an essential part of maintaining
+                overall health and well-being. Here’s why scheduling regular ear
+                check-ups should be a priority.
               </p>
             </div>
-            <div class="mt-auto flex items-center gap-x-3">
-              <img
-                class="size-8 rounded-full"
-                src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                alt="Image Description"
-              />
-              <div>
-                <h5 class="text-sm text-gray-800">By Aaron Larsson</h5>
-              </div>
+            <div className="mt-auto flex items-center gap-x-3">
+              <span className="font-semibold text-gray-800 flex gap-2 items-center">
+                <span>
+                  <img src="/favicon-32x32.png" />
+                </span>
+                <span>EarXScore</span>
+              </span>
             </div>
-          </a>
+          </NavLink>
 
-          <a
-            class="bg-slate-50 group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5"
-            href="#"
+          <NavLink
+            className="bg-slate-50 group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5"
+            to='page2'
           >
-            <div class="aspect-w-16 aspect-h-11">
+            <div className="aspect-w-16 aspect-h-11">
               <img
-                class="w-full object-cover rounded-xl"
-                src="https://images.unsplash.com/photo-1521321205814-9d673c65c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3548&q=80"
+                className="w-full object-cover rounded-xl"
+                src="/images/pexels-michael-burrows-7129708.jpg"
                 alt="Image Description"
               />
             </div>
-            <div class="my-6">
-              <h3 class="text-xl font-semibold text-gray-800">
-                Front accounts - let's work together
+            <div className="my-6">
+              <h3 className="text-xl font-semibold text-gray-800">
+                Understanding Hearing Loss: Symptoms and Solutions
               </h3>
-              <p class="mt-5 text-gray-600">
-                Are you an accountant? Are you a company formation advisor?
+              <p className="mt-5 text-gray-600">
+                Hearing loss is a common condition that affects millions of
+                people worldwide, yet it often goes unnoticed until it
+                significantly impacts daily life. Understanding the symptoms of
+                hearing loss and the available solutions is crucial for
+                maintaining good ear health and overall quality of life.
               </p>
             </div>
-            <div class="mt-auto flex items-center gap-x-3">
-              <img
-                class="size-8 rounded-full"
-                src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                alt="Image Description"
-              />
-              <div>
-                <h5 class="text-sm text-gray-800">By Lauren Waller</h5>
-              </div>
+            <div className="mt-auto flex items-center gap-x-3">
+              <span className="font-semibold text-gray-800 flex gap-2 items-center">
+                <span>
+                  <img src="/favicon-32x32.png" />
+                </span>
+                <span>EarXScore</span>
+              </span>
             </div>
-          </a>
+          </NavLink>
         </div>
 
-        <div class="mt-12 text-center">
+        <div className="mt-12 text-center">
           <a
-            class="py-3 px-4 inline-flex items-center gap-x-1 text-sm font-medium rounded-full border border-gray-200 bg-white text-blue-600 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+            className="py-3 px-4 inline-flex items-center gap-x-1 text-sm font-medium rounded-full border border-gray-200 bg-white text-blue-600 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
             href="#"
           >
             Read more
             <svg
-              class="flex-shrink-0 size-4"
+              className="flex-shrink-0 size-4"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"

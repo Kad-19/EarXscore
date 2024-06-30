@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import API_URL from "@/url";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
@@ -15,7 +15,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+
 const Quizz = ({ user, error, isAuthenticated }) => {
+  useEffect(() => {
+    const checkAuth = async () => {
+      await isAuthenticated;
+      if(!isAuthenticated){
+        navigate("/");
+      }
+    }
+    checkAuth();
+  }, [isAuthenticated]);
+
   const navigate = useNavigate();
   let { difficulty } = useParams();
 
@@ -23,48 +34,62 @@ const Quizz = ({ user, error, isAuthenticated }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [questionData, setQuestionData] = useState({
     id: "",
-    title: "",
+    title: "Listen to the audio and type what you hear",
     correctAnswer: "",
-    num: 1,
-    type: "",
+    num: 0,
+    type: "audio",
     audioData: "",
   });
+  const { id, title, correctAnswer, num, type, audioData } = questionData;
+  
+  let fetched = false;
   useEffect(() => {
-    fetchQuizzes();
+    if (!fetched) {
+      setIsLoading(true);
+      fetchQuizzes();
+      fetched = true;
+    }
   }, []);
   useEffect(() => {
     if (quiz) {
-      if (quiz.quiz.questions[0].type == "text") {
+      if(localStorage.getItem('current_question') == 0){
+        const nextNum = num + 1;
         setQuestionData({
-          id: quiz.quiz.questions[0].id,
-          title: quiz.quiz.questions[0].question,
-          correctAnswer: quiz.quiz.questions[0].correctAnswer,
-          num: 1,
-          type: quiz.quiz.questions[0].type,
-          audioData: "",
-        });
-      } else {
-        setQuestionData({
-          id: quiz.quiz.questions[0].id,
-          title: quiz.quiz.questions[0].question,
-          correctAnswer: quiz.quiz.questions[0].correctAnswer,
-          num: 1,
-          type: quiz.quiz.questions[0].type,
-          audioData: quiz.quiz.questions[0].audioData,
+          id: quiz.id,
+          title: "Listen to the audio and type what you hear",
+          correctAnswer: quiz.answer,
+          num: nextNum,
+          type: "audio",
+          audioData: quiz.audio,
         });
       }
+      else{
+        const nextNum = parseInt(localStorage.getItem('current_question'), 10) + 1;
+        setQuestionData({
+          id: quiz.id,
+          title: "Listen to the audio and type what you hear",
+          correctAnswer: quiz.answer,
+          num: nextNum,
+          type: "audio",
+          audioData: quiz.audio,
+        });
+      }
+      setIsLoading(false);
     }
   }, [quiz]);
 
-  const { id, title, correctAnswer, num, type, audioData } = questionData;
+  const parsedAnswers = JSON.parse(localStorage.getItem('answers'));
 
-  const [answers, setAnswers] = useState([]);
+  const [answers, setAnswers] = useState(parsedAnswers);
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [score, setScore] = useState(null);
   const [timeLeft, setTimeLeft] = useState(300);
   const [scoreMessage, setScoreMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
+
+  
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -94,43 +119,28 @@ const Quizz = ({ user, error, isAuthenticated }) => {
     setAnswers([...answers, newAnswer]);
     setIsSubmitted(true);
     setFeedback(currentAnswer === correctAnswer ? "Correct" : "Wrong");
+    localStorage.setItem('current_question', num);
   };
 
-  const handleNextQuestion = () => {
-    const nextNum = num + 1;
-    if (quiz.quiz.questions[nextNum - 1].type == "text") {
-      setQuestionData({
-        id: quiz.quiz.questions[nextNum - 1].id,
-        title: quiz.quiz.questions[nextNum - 1].question,
-        correctAnswer: quiz.quiz.questions[nextNum - 1].correctAnswer,
-        num: nextNum,
-        type: quiz.quiz.questions[nextNum - 1].type,
-        audioData: "",
-      });
-    } else {
-      setQuestionData({
-        id: quiz.quiz.questions[nextNum - 1].id,
-        title: quiz.quiz.questions[nextNum - 1].question,
-        correctAnswer: quiz.quiz.questions[nextNum - 1].correctAnswer,
-        num: nextNum,
-        type: quiz.quiz.questions[nextNum - 1].type,
-        audioData: quiz.quiz.questions[nextNum - 1].audioData,
-      });
+  useEffect(() => {
+    if(answers){
+      localStorage.setItem('answers', JSON.stringify(answers));
+      console.log(answers);
     }
+  }, [answers]);
+
+  const handleNextQuestion = () => {
+    console.log(answers);
+    fetchQuizzes();
+    setIsLoading(true);
+
     setCurrentAnswer("");
     setIsSubmitted(false);
     setFeedback("");
   };
 
   const handleSubmitQuiz = async () => {
-    const totalScore = answers.reduce((score, answer) => {
-      const question = quiz.quiz.questions.find((q) => q.id === answer.id);
-      if (question && question.correctAnswer === answer.answer) {
-        return score + 1;
-      }
-      return score;
-    }, 0);
-
+    setIsLoading(true);   
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -145,9 +155,13 @@ const Quizz = ({ user, error, isAuthenticated }) => {
     try {
       const res = await axios.post(`${API_URL}/quiz/submit`, body, config);
       console.log(res);
-      navigate(`/score/${totalScore}`);
+      const totalScore = await fetchScore();
+      if(totalScore >= 0){
+        navigate(`/score/${totalScore}`);
+      }
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
       setErrorMessage(err.response.data.error);
     }
   };
@@ -163,14 +177,18 @@ const Quizz = ({ user, error, isAuthenticated }) => {
 
     const body = JSON.stringify({ id, difficulty });
 
+    let score = -1;
+
     try {
       const res = await axios.post(`${API_URL}/quiz/score`, body, config);
       console.log(res);
-      setScoreMessage(res.data.message);
+      score = res.data.score;
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
       setErrorMessage(err.response.data.error);
     }
+    return score;
   };
 
   const formattedTime = `${Math.floor(timeLeft / 60)}:${String(
@@ -194,9 +212,43 @@ const Quizz = ({ user, error, isAuthenticated }) => {
       setQuiz(res.data);
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
       setErrorMessage(err.response.data.error);
     }
   };
+
+  const [audioUrl, setAudioUrl] = useState("");
+
+  // Convert base64 to ArrayBuffer
+  const base64ToArrayBuffer = (base64) => {
+    const binaryString = window.atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
+
+  // Convert base64 string to Blob and create an object URL
+  const createAudioUrl = (base64) => {
+    const arrayBuffer = base64ToArrayBuffer(base64);
+    const blob = new Blob([arrayBuffer], { type: "audio/mp3" });
+    const url = URL.createObjectURL(blob);
+    setAudioUrl(url);
+  };
+
+  // Trigger audio URL creation when the component mounts
+  useEffect(() => {
+    if (audioData) {
+      createAudioUrl(audioData);
+      return () => {
+        if (audioUrl) {
+          URL.revokeObjectURL(audioUrl);
+        }
+      };
+    }
+  }, [audioData]);
 
   return (
     <div className="flex items-center w-full justify-center h-screen">
@@ -217,8 +269,21 @@ const Quizz = ({ user, error, isAuthenticated }) => {
                 </p>
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              {type == "text" ? "" : <AudioPlayer base64Audio={audioData} />}
+            {isLoading? <div className="h-48 flex items-center justify-center">
+              <img src="/images/loading.gif" className="h-40" />
+            </div>: <CardContent className='h-48'>
+              {type == "text" ? (
+                ""
+              ) : (
+                <div>
+                  {audioUrl && (
+                    <audio key={audioUrl} controls>
+                      <source src={audioUrl} type="audio/mp3" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  )}
+                </div>
+              )}
               <hr className="bg-primary text-primary h-1 my-2" />
               <p className="text-2xl font-extrabold text-secondary md:text-3xl">
                 Answer
@@ -250,9 +315,10 @@ const Quizz = ({ user, error, isAuthenticated }) => {
                   </p>
                 )}
               </div>
-            </CardContent>
+            </CardContent>}
+            
             <CardFooter>
-              <p>
+              
                 <div className="my-2 flex gap-2">
                   {num < 10 ? (
                     <Button
@@ -272,17 +338,15 @@ const Quizz = ({ user, error, isAuthenticated }) => {
                     </Button>
                   )}
                 </div>
-              </p>
+              
             </CardFooter>
           </Card>
           <div className="">
             <div className="bg-stone-700 p-12 rounded-lg">
-            <p className="text-3xl font-medium text-yellow-400 md:text-5xl w-24">
-              {formattedTime}
-            </p>
-
+              <p className="text-3xl font-medium text-yellow-400 md:text-5xl w-24">
+                {formattedTime}
+              </p>
             </div>
-             
           </div>
         </div>
       )}

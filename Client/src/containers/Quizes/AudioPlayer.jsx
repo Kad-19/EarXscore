@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-const AudioPlayer = ({ base64Audio }) => {
+const AudioPlayer = () => {
+  const { audioData } = useContext(AudioContext);
   const [audioUrl, setAudioUrl] = useState('');
 
   // Convert base64 to ArrayBuffer
@@ -24,10 +25,11 @@ const AudioPlayer = ({ base64Audio }) => {
 
   // Trigger audio URL creation when the component mounts
   useEffect(() => {
-    if (base64Audio) {
-      createAudioUrl(base64Audio);
+    if (audioData) {
+      createAudioUrl(audioData);
+      
     }
-  }, [base64Audio]);
+  }, [audioData]);
 
   return (
     <div>

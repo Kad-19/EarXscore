@@ -34,7 +34,7 @@ import axios from "axios";
 import API_URL from "@/url";
 
 const Navbar = ({ logout, user }) => {
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
@@ -61,17 +61,21 @@ const Navbar = ({ logout, user }) => {
     }
   };
 
-  const handleButtonClick = (difficulty)=>{
+  const handleButtonClick = (difficulty) => {
     fetchQuizzes(difficulty);
-  }
+    localStorage.setItem("current_question", 0);
+    const answers = [];
+    const stringifiedAnswers = JSON.stringify(answers)
+    localStorage.setItem("answers", stringifiedAnswers);
+  };
 
   useEffect(() => {
-    if(errorMessage){
+    if (errorMessage) {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
         description: errorMessage,
-      })
+      });
     }
   }, [errorMessage]);
 
@@ -81,9 +85,9 @@ const Navbar = ({ logout, user }) => {
   };
   return (
     <div>
-      <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
+      <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm px-10">
         <nav
-          className="mt-6 relative max-w-[85rem] w-full bg-white border border-gray-200 rounded-[36px] mx-2 py-3 px-4 md:flex md:items-center md:justify-between md:py-0 md:px-6 lg:px-8 xl:mx-auto dark:bg-neutral-800 dark:border-neutral-700"
+          className="mt-3 relative max-w-[85rem] w-full bg-white border border-gray-200 rounded-[36px] mx-2 py-3 px-4 md:flex md:items-center md:justify-between md:py-0 md:px-6 lg:px-8 xl:mx-auto dark:bg-neutral-800 dark:border-neutral-700"
           aria-label="Global"
         >
           <div className="flex items-center justify-between">
@@ -165,15 +169,23 @@ const Navbar = ({ logout, user }) => {
                   <DropdownMenuContent>
                     <DropdownMenuLabel>Choose Difficulty</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleButtonClick("easy")}>Easy</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleButtonClick("medium")}>Medium</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleButtonClick("hard")}>Hard</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleButtonClick("easy")}>
+                      Easy
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleButtonClick("medium")}
+                    >
+                      Medium
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleButtonClick("hard")}>
+                      Hard
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </a>
               <NavLink
                 className="py-3 ps-px sm:px-3 font-medium text-gray-500 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500"
-                to='/blogs'
+                to="/blogs"
               >
                 Blog
               </NavLink>
@@ -204,8 +216,11 @@ const Navbar = ({ logout, user }) => {
                     <SheetContent className="bg-white">
                       <SheetHeader>
                         <SheetTitle>
-                          <span className="grid h-10 w-32 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
-                            Logo
+                          <span class="font-semibold text-gray-800 flex gap-2 items-center">
+                            <span>
+                              <img src="/favicon-32x32.png" />
+                            </span>
+                            <span>EarXScore</span>
                           </span>
                         </SheetTitle>
                         <SheetDescription>

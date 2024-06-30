@@ -7,7 +7,7 @@ import { login, refresh } from "../../actions/auth";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import ChangePassword from './ChangePassword';
+import ChangePassword from "./ChangePassword";
 const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -29,21 +29,18 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (user) {
-        console.log(user);
-        setIsLoading(false);
-        navigate("/userdashboard");
-      }
+    if (user) {
+      setIsLoading(false);
+      navigate("/userdashboard");
     }
     if (error) {
       setIsLoading(false);
     }
-  });
+  }, [user]);
 
   useEffect(() => {
     refresh();
-  }, [])
+  }, []);
 
   return (
     <div className="flex items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 gap-24 flex-wrap">
@@ -51,7 +48,11 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
         {user ? (
           <div className="text-6xl font-semibold leading-snug pr-10">
             Welcome {user.user}
-            <br /> <Button><NavLink to='/changepassword'> Change Password </NavLink></Button><br />
+            <br />{" "}
+            <Button>
+              <NavLink to="/changepassword"> Change Password </NavLink>
+            </Button>
+            <br />
             <p className="back-wave h-40"></p>
           </div>
         ) : (
@@ -61,7 +62,7 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
             <p className="back-wave h-40"></p>
           </div>
         )}
-       
+
         <img
           src="/images/ManShowingSmartphone-ezgif.com-crop.gif"
           alt=""

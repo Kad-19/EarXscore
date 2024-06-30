@@ -20,8 +20,8 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  isAuthenticated: null,
-  user: null,
+  isAuthenticated: JSON.parse(localStorage.getItem('isAuthenticated')),
+  user: JSON.parse(localStorage.getItem('user')),
   error: null,
   email: localStorage.getItem("email"),
   message: null,
@@ -39,6 +39,8 @@ export default function (state = initialState, action) {
       };
     case LOGIN_SUCCESS:
       localStorage.setItem("id", payload.id);
+      localStorage.setItem("user", JSON.stringify(payload));
+      localStorage.setItem('isAuthenticated', true);
       return {
         ...state,
         isAuthenticated: true,
@@ -68,6 +70,8 @@ export default function (state = initialState, action) {
     case LOGOUT:
       localStorage.setItem("id", null);
       localStorage.setItem("email", null);
+      localStorage.setItem('user', null);
+      localStorage.setItem('isAuthenticated', false);
       return {
         ...state,
         isAuthenticated: null,

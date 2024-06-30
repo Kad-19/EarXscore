@@ -222,8 +222,6 @@ def score_quiz():
     difficulty = data.get('difficulty')
 
     user = Quiz.query.filter_by(user_id=user_id, difficulty=difficulty).first()
-    if user.score == 10:
-        return jsonify({'message': f'Congratulation, Your Score is {user.score} out of 10, Well Done For Making it to the Next Level.'}), 200
-    else:
-        return jsonify({'message': f'Your Score is {user.score} Out of 10, Sorry, You Didn\'t Passed to the Next Level, You can come back and Try Again.'}), 200
+    
+    return jsonify({'score': f'{user.score}'}), 200
     
