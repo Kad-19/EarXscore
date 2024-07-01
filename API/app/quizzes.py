@@ -156,7 +156,7 @@ def get_quiz():
     else:
         return jsonify("Invalid"), 400
 
-# Load quiz data from JSON file
+# getting all question from json file
 def get_questions(difficulty):
     if difficulty == "easy":
         with open('easyquiz.json', 'r') as f:
@@ -176,6 +176,7 @@ def get_questions(difficulty):
     return "Wrong Diffculty"
 
 
+# function that calculate score
 def calculate_score(difficulty, user_answers):
 
     if not user_answers and not difficulty:
@@ -215,7 +216,7 @@ def submit_quiz():
 
     return jsonify({'message': f'Score for {difficulty} quiz submitted successfully.'}), 200
 
-@quiz_bp.route('/quiz/score', methods=['GET', 'POST'])
+@quiz_bp.route('/quiz/score', methods=['GET', 'POST'], strict_slashes=False)
 def score_quiz():
     data = request.json
     user_id = data.get('id')
@@ -225,3 +226,30 @@ def score_quiz():
     
     return jsonify({'score': f'{user.score}'}), 200
     
+# calculate overall average and return it
+@quiz_bp.route('/average', methods=['GET', 'POST'], strict_slashes=False)
+def average():
+    data = request.json
+    user_id = data.get('id')
+    
+    if not user_id:
+        return jsonify({'esd rror': 'User ID is required'}), 400
+    
+    # Query all quiz records for the given user
+    user_quizzes = Quiz.query.filter_by(user_id=user_id).all()
+    
+    if not user_quizzes:
+        return jsonify({'message': 'You are New Here, Welcome'}), 200
+
+    # Calculate the total score and count of quizzes
+    total_score = sum(quiz.score for quiz in user_quizzes)
+    total = total_score * 10
+    total_quizzes = len(user_quizzes)
+    
+    # Calculate the overall average
+    if total_quizzes > 0:
+        overall_average = total / total_quizzes
+    else:
+        overall_average = 0
+    
+    return jsonify({'Your Overall Average is': f'{overall_average:.2f}'}), 200
