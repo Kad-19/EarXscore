@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from .routes import auth_bp
 from .quizzes import quiz_bp
-from config import Config
+from ..config import Config
 from flask_mail import Mail
 from .models import db
 

@@ -1,7 +1,7 @@
 import json
 from flask import Blueprint, request, jsonify
 from gtts import gTTS
-from app.models import db, Quiz
+from .models import db, Quiz
 from flask_cors import CORS
 import random, base64
 
