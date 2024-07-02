@@ -20,7 +20,7 @@ const Home = () => {
               </p>
 
               <div class="mt-5 max-w-2xl">
-                <h1 class="block font-semibold text-gray-800 text-4xl md:text-5xl lg:text-6xl">
+                <h1 class="block font-semibold bg-clip-text bg-gradient-to-l from-green-600 to-stone-500 text-transparent text-4xl md:text-5xl lg:text-6xl">
                   The Intuitive Web Solutions
                 </h1>
               </div>
