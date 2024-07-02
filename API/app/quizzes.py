@@ -266,4 +266,4 @@ def average():
     else:
         overall_average = 0
     
-    return jsonify({'Your Overall Average is': f'{overall_average:.2f}'}), 200
+    return jsonify({'average': f'{overall_average:.2f}'}), 200
