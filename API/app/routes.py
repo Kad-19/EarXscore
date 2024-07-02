@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify, url_for, current_app
-from app.models import db, User
+from .models import db, User
 from flask_cors import CORS
 from flask_mail import Mail, Message
 import random, string

@@ -1,7 +1,7 @@
 # run/wsgi used to start flask application
 
-from app import create_app, db
-from app.models import User
+from API.app import create_app, db
+from API.app.models import User
 
 app = create_app()
 

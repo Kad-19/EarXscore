@@ -1,31 +1,36 @@
 import json
 from flask import Blueprint, request, jsonify
 from gtts import gTTS
-from app.models import db, Quiz
+from .models import db, Quiz
 from flask_cors import CORS
-import random, base64
+import os, random, base64
 
 quiz_bp = Blueprint('quiz', __name__)
 CORS(quiz_bp)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+qeasy = os.path.join(BASE_DIR, 'easyquiz.json')
+qmed = os.path.join(BASE_DIR, 'medquiz.json')
+qhard = os.path.join(BASE_DIR, 'hardquiz.json')
+
 # Load quiz data from JSON file
 def load_quiz_data(difficulty):
     if difficulty == "easy":
-        with open('easyquiz.json', 'r') as f:
+        with open(qeasy, 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
             random.shuffle(questions)  # Shuffle the list of questions
             quiz_data['questions'] = questions  # Update shuffled questions in quiz_data
         return quiz_data
     elif difficulty == "medium":
-        with open('medquiz.json', 'r') as f:
+        with open(qmed, 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
             random.shuffle(questions)  # Shuffle the list of questions
             quiz_data['questions'] = questions  # Update shuffled questions in quiz_data
         return quiz_data
     elif difficulty == "hard":
-        with open('hardquiz.json', 'r') as f:
+        with open(qhard, 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
             random.shuffle(questions)  # Shuffle the list of questions
@@ -74,9 +79,12 @@ def get_quiz():
             audio_text = quiz['audio']
             audio_answer = quiz['correctAnswer']
             tts = gTTS(text=audio_text, lang='en')
-            file = './audio/easy.mp3'
-            tts.save(file)
-            encoded = encode_audio_files(file)
+            audio_dir = './audio'
+            os.makedirs(audio_dir, exist_ok=True)  # Ensure directory exists
+
+            file_path = os.path.join(audio_dir, 'easy.mp3')
+            tts.save(file_path)
+            encoded = encode_audio_files(file_path)
             
             response = {
                 "id": audio_id,
@@ -96,10 +104,13 @@ def get_quiz():
             audio_text = quiz['audio']
             audio_answer = quiz['correctAnswer']
             tts = gTTS(text=audio_text, lang='en')
-            file = './audio/easy.mp3'
-            tts.save(file)
-            encoded = encode_audio_files(file)
-            
+            audio_dir = './audio'
+            os.makedirs(audio_dir, exist_ok=True)  # Ensure directory exists
+
+            file_path = os.path.join(audio_dir, 'easy.mp3')
+            tts.save(file_path)
+            encoded = encode_audio_files(file_path)
+
             response = {
                 "id": audio_id,
                 "audio": encoded,
@@ -117,10 +128,13 @@ def get_quiz():
                 audio_text = quiz['audio']
                 audio_answer = quiz['correctAnswer']
                 tts = gTTS(text=audio_text, lang='en')
-                file = './audio/easy.mp3'
-                tts.save(file)
-                encoded = encode_audio_files(file)
-            
+                audio_dir = './audio'
+                os.makedirs(audio_dir, exist_ok=True)  # Ensure directory exists
+
+                file_path = os.path.join(audio_dir, 'easy.mp3')
+                tts.save(file_path)
+                encoded = encode_audio_files(file_path) 
+
                 response = {
                     "id": audio_id,
                     "audio": encoded,
@@ -156,26 +170,27 @@ def get_quiz():
     else:
         return jsonify("Invalid"), 400
 
-# Load quiz data from JSON file
+# getting all question from json file
 def get_questions(difficulty):
     if difficulty == "easy":
-        with open('easyquiz.json', 'r') as f:
+        with open(qeasy, 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
         return questions
     elif difficulty == "medium":
-        with open('medquiz.json', 'r') as f:
+        with open(qmed, 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
         return questions
     elif difficulty == "hard":
-        with open('hardquiz.json', 'r') as f:
+        with open(qhard, 'r') as f:
             quiz_data = json.load(f)
             questions = quiz_data['quiz']['questions']
         return questions
     return "Wrong Diffculty"
 
 
+# function that calculate score
 def calculate_score(difficulty, user_answers):
 
     if not user_answers and not difficulty:
@@ -215,7 +230,7 @@ def submit_quiz():
 
     return jsonify({'message': f'Score for {difficulty} quiz submitted successfully.'}), 200
 
-@quiz_bp.route('/quiz/score', methods=['GET', 'POST'])
+@quiz_bp.route('/quiz/score', methods=['GET', 'POST'], strict_slashes=False)
 def score_quiz():
     data = request.json
     user_id = data.get('id')
@@ -225,3 +240,30 @@ def score_quiz():
     
     return jsonify({'score': f'{user.score}'}), 200
     
+# calculate overall average and return it
+@quiz_bp.route('/average', methods=['GET', 'POST'], strict_slashes=False)
+def average():
+    data = request.json
+    user_id = data.get('id')
+    
+    if not user_id:
+        return jsonify({'esd rror': 'User ID is required'}), 400
+    
+    # Query all quiz records for the given user
+    user_quizzes = Quiz.query.filter_by(user_id=user_id).all()
+    
+    if not user_quizzes:
+        return jsonify({'message': 'You are New Here, Welcome'}), 200
+
+    # Calculate the total score and count of quizzes
+    total_score = sum(quiz.score for quiz in user_quizzes)
+    total = total_score * 10
+    total_quizzes = len(user_quizzes)
+    
+    # Calculate the overall average
+    if total_quizzes > 0:
+        overall_average = total / total_quizzes
+    else:
+        overall_average = 0
+    
+    return jsonify({'Your Overall Average is': f'{overall_average:.2f}'}), 200
