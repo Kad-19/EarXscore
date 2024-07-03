@@ -29,7 +29,7 @@ Follow us on Twitter for more tech related awesomeness!
 
 ## Blog posts
 
-After the development phase, we each wrote a blog post to reflect on the PuppR journey.
+After the development phase, we each wrote a blog post to reflect on the EarXScore journey.
 
 - Kidus's article: [EarXScore: ](https://medium.com/@Kad-19)
 - Firaol's article: [EarXScore: ](https://medium.com/@firacil)
