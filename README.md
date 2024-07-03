@@ -25,7 +25,7 @@ We are ALX Software Engineering learners Peers who meet here and now have amazin
 - **Kidus Asebe** [@Kad-19](https://twitter.com/Kad-19) - Take a Role of Frontend Development
 - **Firaol Mekbib** [@firacil](https://twitter.com/firacil) - Take a Role of Backend Development
 
-Follow us on Twitter for more tech related awesomeness!
+Follow us on Twitter for more tech related awesomeness!!
 
 ## Blog posts
 
