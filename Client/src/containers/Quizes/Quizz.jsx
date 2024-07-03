@@ -14,16 +14,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Quizz = ({ user, error, isAuthenticated }) => {
   useEffect(() => {
     const checkAuth = async () => {
       await isAuthenticated;
-      if(!isAuthenticated){
+      if (!isAuthenticated) {
         navigate("/");
       }
-    }
+    };
     checkAuth();
   }, [isAuthenticated]);
 
@@ -41,7 +51,7 @@ const Quizz = ({ user, error, isAuthenticated }) => {
     audioData: "",
   });
   const { id, title, correctAnswer, num, type, audioData } = questionData;
-  
+
   let fetched = false;
   useEffect(() => {
     if (!fetched) {
@@ -52,7 +62,7 @@ const Quizz = ({ user, error, isAuthenticated }) => {
   }, []);
   useEffect(() => {
     if (quiz) {
-      if(localStorage.getItem('current_question') == 0){
+      if (localStorage.getItem("current_question") == 0) {
         const nextNum = num + 1;
         setQuestionData({
           id: quiz.id,
@@ -62,9 +72,9 @@ const Quizz = ({ user, error, isAuthenticated }) => {
           type: "audio",
           audioData: quiz.audio,
         });
-      }
-      else{
-        const nextNum = parseInt(localStorage.getItem('current_question'), 10) + 1;
+      } else {
+        const nextNum =
+          parseInt(localStorage.getItem("current_question"), 10) + 1;
         setQuestionData({
           id: quiz.id,
           title: "Listen to the audio and type what you hear",
@@ -78,7 +88,7 @@ const Quizz = ({ user, error, isAuthenticated }) => {
     }
   }, [quiz]);
 
-  const parsedAnswers = JSON.parse(localStorage.getItem('answers'));
+  const parsedAnswers = JSON.parse(localStorage.getItem("answers"));
 
   const [answers, setAnswers] = useState(parsedAnswers);
   const [currentAnswer, setCurrentAnswer] = useState("");
@@ -87,9 +97,7 @@ const Quizz = ({ user, error, isAuthenticated }) => {
   const [score, setScore] = useState(null);
   const [timeLeft, setTimeLeft] = useState(300);
   const [scoreMessage, setScoreMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false)
-
-  
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -119,12 +127,12 @@ const Quizz = ({ user, error, isAuthenticated }) => {
     setAnswers([...answers, newAnswer]);
     setIsSubmitted(true);
     setFeedback(currentAnswer === correctAnswer ? "Correct" : "Wrong");
-    localStorage.setItem('current_question', num);
+    localStorage.setItem("current_question", num);
   };
 
   useEffect(() => {
-    if(answers){
-      localStorage.setItem('answers', JSON.stringify(answers));
+    if (answers) {
+      localStorage.setItem("answers", JSON.stringify(answers));
       console.log(answers);
     }
   }, [answers]);
@@ -140,7 +148,7 @@ const Quizz = ({ user, error, isAuthenticated }) => {
   };
 
   const handleSubmitQuiz = async () => {
-    setIsLoading(true);   
+    setIsLoading(true);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -156,7 +164,7 @@ const Quizz = ({ user, error, isAuthenticated }) => {
       const res = await axios.post(`${API_URL}/quiz/submit`, body, config);
       console.log(res);
       const totalScore = await fetchScore();
-      if(totalScore >= 0){
+      if (totalScore >= 0) {
         navigate(`/score/${totalScore}`);
       }
     } catch (err) {
@@ -250,12 +258,23 @@ const Quizz = ({ user, error, isAuthenticated }) => {
     }
   }, [audioData]);
 
+  const onQuitQuiz = () => {
+    navigate("/userdashboard");
+  }
+
   return (
     <div className="flex items-center w-full justify-center h-screen">
       {errorMessage ? (
         <div>{errorMessage}</div>
       ) : (
-        <div className=" w-[80%] flex gap-6 mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+        <div className=" md:w-[80%] md:flex gap-6 mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+          <div className="md:hidden">
+            <div className="bg-stone-700 p-5 mb-2 rounded-lg">
+              <p className="text-3xl text-center font-medium text-yellow-400 md:text-5xl w-24">
+                {formattedTime}
+              </p>
+            </div>
+          </div>
           <Card>
             <CardHeader>
               <CardTitle>
@@ -269,79 +288,102 @@ const Quizz = ({ user, error, isAuthenticated }) => {
                 </p>
               </CardDescription>
             </CardHeader>
-            {isLoading? <div className="h-48 flex items-center justify-center">
-              <img src="/images/loading.gif" className="h-40" />
-            </div>: <CardContent className='h-48'>
-              {type == "text" ? (
-                ""
-              ) : (
+            {isLoading ? (
+              <div className="h-48 flex items-center justify-center">
+                <img src="/images/loading.gif" className="h-40" />
+              </div>
+            ) : (
+              <CardContent className="h-48">
+                {type == "text" ? (
+                  ""
+                ) : (
+                  <div>
+                    {audioUrl && (
+                      <audio key={audioUrl} controls>
+                        <source src={audioUrl} type="audio/mp3" />
+                        Your browser does not support the audio element.
+                      </audio>
+                    )}
+                  </div>
+                )}
+                <hr className="bg-primary text-primary h-1 my-2" />
+                <p className="text-2xl font-extrabold text-secondary md:text-3xl">
+                  Answer
+                </p>
+                <form
+                  className="flex gap-3 items-center"
+                  onSubmit={(e) => handleSubmit(e)}
+                >
+                  <Input
+                    className="bg-white my-2"
+                    value={currentAnswer}
+                    onChange={handleAnswerChange}
+                    disabled={isSubmitted}
+                  />
+                  <Button disabled={isSubmitted} type="submit">
+                    Submit
+                  </Button>
+                </form>
                 <div>
-                  {audioUrl && (
-                    <audio key={audioUrl} controls>
-                      <source src={audioUrl} type="audio/mp3" />
-                      Your browser does not support the audio element.
-                    </audio>
+                  {feedback && (
+                    <p
+                      className={
+                        feedback == "Wrong"
+                          ? "text-red-400 text-2xl font-bold"
+                          : "text-green-400 text-2xl font-bold"
+                      }
+                    >
+                      {feedback}
+                    </p>
                   )}
                 </div>
-              )}
-              <hr className="bg-primary text-primary h-1 my-2" />
-              <p className="text-2xl font-extrabold text-secondary md:text-3xl">
-                Answer
-              </p>
-              <form
-                className="flex gap-3 items-center"
-                onSubmit={(e) => handleSubmit(e)}
-              >
-                <Input
-                  className="bg-white my-2"
-                  value={currentAnswer}
-                  onChange={handleAnswerChange}
-                  disabled={isSubmitted}
-                />
-                <Button disabled={isSubmitted} type="submit">
-                  Submit
-                </Button>
-              </form>
-              <div>
-                {feedback && (
-                  <p
-                    className={
-                      feedback == "Wrong"
-                        ? "text-red-400 text-2xl font-bold"
-                        : "text-green-400 text-2xl font-bold"
-                    }
+              </CardContent>
+            )}
+
+            <CardFooter>
+              <div className="my-2 flex gap-2">
+                {num < 10 ? (
+                  <Button
+                    onClick={handleNextQuestion}
+                    disabled={!isSubmitted}
+                    className="bg-secondary hover:bg-stone-500"
                   >
-                    {feedback}
-                  </p>
+                    Next
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmitQuiz}
+                    disabled={!isSubmitted}
+                    className="bg-secondary"
+                  >
+                    Submit Quiz
+                  </Button>
                 )}
               </div>
-            </CardContent>}
-            
-            <CardFooter>
-              
-                <div className="my-2 flex gap-2">
-                  {num < 10 ? (
-                    <Button
-                      onClick={handleNextQuestion}
-                      disabled={!isSubmitted}
-                      className="bg-secondary hover:bg-stone-500"
-                    >
-                      Next
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleSubmitQuiz}
-                      disabled={!isSubmitted}
-                      className="bg-secondary"
-                    >
-                      Submit Quiz
-                    </Button>
-                  )}
-                </div>
-              
             </CardFooter>
+            <div>
+              <AlertDialog>
+                <AlertDialogTrigger className="w-full">
+                  <Button className="w-full bg-stone-800">Quit quiz</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      You are about to quit from this quiz.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onQuitQuiz()}>Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </Card>
-          <div className="">
+          <div className="hidden md:block">
             <div className="bg-stone-700 p-12 rounded-lg">
               <p className="text-3xl font-medium text-yellow-400 md:text-5xl w-24">
                 {formattedTime}

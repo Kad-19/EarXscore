@@ -36,7 +36,7 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
     if (error) {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, error]);
 
   useEffect(() => {
     refresh();
@@ -44,14 +44,11 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
 
   return (
     <div className="flex items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 gap-24 flex-wrap">
-      <div className="flex gap-2">
+      <div className="md:flex gap-2 hidden">
         {user ? (
           <div className="text-6xl font-semibold leading-snug pr-10">
             Welcome {user.user}
             <br />{" "}
-            <Button>
-              <NavLink to="/changepassword"> Change Password </NavLink>
-            </Button>
             <br />
             <p className="back-wave h-40"></p>
           </div>
@@ -121,7 +118,7 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
             </div>
 
             <div className="flex gap-4 text-[18px] align-middle py-3 flex-col">
-              <div className=" italic text-red-500 text-lg ">
+              <div className=" italic text-red-500 md:text-lg ">
                 {error ? error.error : ""}
               </div>
 
@@ -143,12 +140,19 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
                 <NavLink to="/forgotpassword">Forgot Password?</NavLink>
               </div>
             </div>
-            <div className="text-lg py-1 font-medium">
+            <div className="md:text-lg py-1 font-medium">
               <p>
                 {" "}
                 New to EarScore?{" "}
                 <NavLink to="/signup" className="text-primary sm:mx-3">
                   Create Account
+                </NavLink>
+              </p>
+            </div>
+            <div className="text font-medium">
+              <p>
+                <NavLink to="/home" className="text-primary">
+                  Go to home
                 </NavLink>
               </p>
             </div>

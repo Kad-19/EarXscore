@@ -1,4 +1,3 @@
-const API_URL = "http://localhost:5000"
+const API_URL = "https://firacil.tech"
 export default API_URL;
 
-export const WEBSOCKET_URL = "localhost:5000";
