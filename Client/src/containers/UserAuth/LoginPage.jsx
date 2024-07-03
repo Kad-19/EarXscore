@@ -43,7 +43,7 @@ const LoginPage = ({ user, login, isAuthenticated, error, refresh }) => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 gap-24 flex-wrap">
+    <div className="flex items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 gap-24 flex-wrap min-h-screen">
       <div className="md:flex gap-2 hidden">
         {user ? (
           <div className="text-6xl font-semibold leading-snug pr-10">

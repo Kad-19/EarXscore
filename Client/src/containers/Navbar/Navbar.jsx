@@ -107,7 +107,7 @@ const Navbar = ({ logout, user }) => {
                   <Sheet>
                     <SheetTrigger className="flex items-center">
                       <svg
-                        className="flex-shrink-0 size-4"
+                        className="flex-shrink-0 size-4 mx-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
