@@ -1,1 +1,1 @@
-# EarXscore
+# EarXscore Server Side Implementation
