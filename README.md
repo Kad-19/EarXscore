@@ -10,7 +10,7 @@
 Individuals interested in tracking and improving their ear health will be our users and Professionals who can use the data to better understand patient ear health trends.
 This is why we created **EarXScore**.
 
-[**EarXScore**](https://earxscore.netlify.app/home)) aims to provide a quantifiable score reflecting the condition of a user's ears, referred to as the EarHealthScore. This score will help users understand their ear health better and take necessary actions for improvement.
+[**EarXScore**](https://earxscore.netlify.app/home) aims to provide a quantifiable score reflecting the condition of a user's ears, referred to as the EarHealthScore. This score will help users understand their ear health better and take necessary actions for improvement.
 
 Other features include: editing the User's profile, modifying the user settings, and recommendation according to users test result.
 
@@ -32,13 +32,13 @@ Follow us on Twitter for more tech related awesomeness!!
 After the development phase, we each wrote a blog post to reflect on the EarXScore journey.
 
 - Kidus's article: [EarXScore: ](https://medium.com/@Kad-19)
-- Firaol's article: [EarXScore: ](https://medium.com/@firacil)
+- Firaol's article: [EarXScore: ](https://medium.com/@firacil/earxscore-a-comprehensive-hearing-ability-test-platform-67e15445bdd1)
 
 # Tutorial
 
 ## Take a tour of the deployed version at "here"
 
--> [**EarXScore**](https://link)
+-> [**EarXScore**](http://earxscore.netlify.app/home)
 
 Here is a little preview of our main feature
 
