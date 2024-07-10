@@ -10,7 +10,7 @@
 Individuals interested in tracking and improving their ear health will be our users and Professionals who can use the data to better understand patient ear health trends.
 This is why we created **EarXScore**.
 
-[**EarXScore**](https://earxscore.best/) aims to provide a quantifiable score reflecting the condition of a user's ears, referred to as the EarHealthScore. This score will help users understand their ear health better and take necessary actions for improvement.
+[**EarXScore**](https://earxscore.netlify.app/home)) aims to provide a quantifiable score reflecting the condition of a user's ears, referred to as the EarHealthScore. This score will help users understand their ear health better and take necessary actions for improvement.
 
 Other features include: editing the User's profile, modifying the user settings, and recommendation according to users test result.
 
